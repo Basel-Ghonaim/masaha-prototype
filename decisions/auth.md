@@ -41,6 +41,8 @@ view kept in the address.
   production the dots would come from the directory's own pins, never a number written by hand.
 - **The berry's job:** it marks the places — the 13 spaces on the Strip and the caption's dot — and, on
   the forms, what matters now: the address a link went to. Never text, never an action, never an error.
+- **The forced change's header** holds the language and theme switches and «تسجيل الخروج», which on a
+  phone under 480 px shows its icon only (its name kept for assistive technology).
 - **The panel is the ink in both themes** (`neutral-900`; in dark, a hairline `neutral-800` at its start
   edge): the brand's surface, not an action, so it does not invert to `neutral-50`, which would glare
   beside a dark page. On it the dark logo (`masaha-logo-dark-berry.svg`) and the spark at `spark-400`.
@@ -83,7 +85,7 @@ view kept in the address.
 *The Strip as a drawn line: the coast drawn in once, cropped by a narrower panel; on the phone it
 crosses an ink band that carries the brand.*
 - **What it changes:** the form gets the wider column (7 : 5). The panel draws the Strip's outline as a
-  single line (`neutral-500`, 1.5 px) with two echoes of the coast offshore (`neutral-700`, `neutral-800`),
+  single line (`neutral-400`, 1.5 px) with two echoes of the coast offshore (`neutral-700`, `neutral-800`),
   larger than the panel, so its north — where most spaces are — fills the lower half and the south runs
   off the edge; the title (46 px) and line at the top. Below 1280 the header is an **ink band** (116 px on
   the phone, 148 on the tablet) with the dark logo, the tools, and the same line crossing it over Gaza
@@ -104,13 +106,14 @@ crosses an ink band that carries the brand.*
 *The Strip drawn by its grain: a field of small dots, the spaces lit in the berry; the widest panel and
 the most precise form.*
 - **What it changes:** the panel takes the wider column (5 : 7). The Strip is a grid of small dots
-  (`neutral-700`, every 5 units) clipped to the outline, a faint rim; the 13 spaces are larger berry dots
-  at their real places (not snapped to the grid). The title is the largest of the three (54 px) at the
-  panel's foot, under the drawing. The form is narrow (380 px), its h1 28 px, 136 px from the top.
+  (`neutral-600`, about every 500 m) clipped to the outline, a faint rim, the full height of the panel;
+  the 13 spaces are larger berry dots at their real places (not snapped to the grid). The title is the
+  largest of the three (54 px), in the corner the land leaves empty (the foot of the start side in
+  Arabic, its top in English). The form is narrow (380 px), its h1 28 px, 136 px from the top.
   States are compact tinted bars. The conditions are **three short bars**, each named under it, which
   fill with the ink as they are met (red after a submit while unmet) — a checklist, not a strength meter.
   The sent address is a pill with a berry dot. The owner note on `muted`, under the page's line. Below
-  1280 a small dotted Strip (46 × 60 px) stands beside the h1: the phone's touch of the brand.
+  1280 a small dotted Strip (58 × 74 px) stands beside the h1: the phone's touch of the brand.
 - **Motion:** the berry dots appear north to south, 70 ms apart, after 250 ms; off under reduced motion.
 - **Proposed against masaha's design system:** the panel title at 54 / 1.3 (a display step); the
   conditions as bars (the system's `PasswordRules` is a list with marks); compact alerts (13.5 px).

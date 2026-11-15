@@ -42,7 +42,7 @@
 @media (min-width: 1280px) {
   .ax--dots .ax-mini { display: none; }
   .ax--dots .ax-panel { padding: 48px 56px 44px; }
-  .ax--dots .ax-panel-art { inset: 40px 24px 40px 24px; }
+  .ax--dots .ax-panel-art { inset: 112px 24px 40px 24px; }
   .ax--dots .ax-panel-copy { max-width: 440px; }
   /* The copy where the land isn't: the start's bottom in Arabic, its top in English. */
   html[dir=rtl] .ax--dots .ax-panel-copy { margin-block-start: auto; }
