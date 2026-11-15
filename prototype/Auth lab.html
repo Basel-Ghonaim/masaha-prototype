@@ -34,6 +34,7 @@
 .lab-check input{width:18px;height:18px;accent-color:var(--primary)}
 .lab-note{margin:0;padding:10px 20px 0;font-size:13px;color:var(--muted-foreground)}
 .lab-stage{display:flex;gap:24px;align-items:flex-start;padding:16px 20px 40px;overflow-x:auto}
+.lab-stage--grid{display:grid;grid-template-columns:repeat(2,max-content);justify-content:start}
 .lab-frame{display:flex;flex-direction:column;gap:8px;flex:none}
 .lab-cap{display:flex;align-items:baseline;gap:10px;font-size:13px}
 .lab-cap b{font-weight:600}
@@ -47,7 +48,7 @@ html[dir=rtl] .lab-box iframe{transform-origin:top right}
 </head>
 <body class="bg-background text-foreground">
 <div class="lab">
-  <div class="lab-bar" role="toolbar" aria-label="">
+  <div class="lab-bar" role="group" aria-label="">
     <div class="lab-brand">
       <a class="lab-logo" href="Home.html"><span class="lab-sr" data-t="home"></span></a>
       <div><h1 class="lab-title" data-t="title"></h1><p class="lab-sub" data-t="sub"></p></div>
@@ -165,8 +166,13 @@ html[dir=rtl] .lab-box iframe{transform-origin:top right}
     document.getElementById('note').textContent = notes.join(' ');
     const stage = document.getElementById('stage'); stage.textContent = '';
     const list = frames();
-    const avail = Math.max(320, stage.clientWidth - 40 - 24 * (list.length - 1));
-    const total = list.reduce((a, f) => a + +f.w.id, 0);
+    // Compare at 768 or 1440 lays the four out two by two, so each is read at about half its size; at
+    // 390 the four phones stand in a row.
+    const grid = st.compare && list[0].w.id !== '390';
+    stage.classList.toggle('lab-stage--grid', grid);
+    const perRow = grid ? 2 : list.length;
+    const avail = Math.max(320, stage.clientWidth - 40 - 24 * (perRow - 1));
+    const total = grid ? 2 * +list[0].w.id : list.reduce((a, f) => a + +f.w.id, 0);
     const scale = Math.min(1, avail / total);
     for (const f of list) {
       const box = document.createElement('section'); box.className = 'lab-frame';
@@ -178,7 +184,7 @@ html[dir=rtl] .lab-box iframe{transform-origin:top right}
       cap.append(b, sp, a);
       const wrap = document.createElement('div'); wrap.className = 'lab-box';
       wrap.style.width = Math.round(+f.w.id * scale) + 'px'; wrap.style.height = Math.round(f.w.h * scale) + 'px';
-      const ifr = document.createElement('iframe'); ifr.src = url; ifr.width = f.w.id; ifr.height = f.w.h; ifr.loading = 'lazy';
+      const ifr = document.createElement('iframe'); ifr.src = url; ifr.width = f.w.id; ifr.height = f.w.h;
       ifr.title = page().label + ' — ' + f.d.label + ' — ' + f.w.id + ' px';
       ifr.style.transform = 'scale(' + scale + ')';
       wrap.appendChild(ifr); box.append(cap, wrap); stage.appendChild(box);
@@ -187,8 +193,10 @@ html[dir=rtl] .lab-box iframe{transform-origin:top right}
   }
   document.getElementById('page').addEventListener('change', (e) => { st.page = e.target.value; st.state = 'default'; draw(); });
   document.getElementById('state').addEventListener('change', (e) => { st.state = e.target.value; draw(); });
-  document.getElementById('compare').addEventListener('change', (e) => { st.compare = e.target.checked; if (st.compare && st.width === 'all') st.width = '1440'; draw(); });
-  let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(draw, 200); });
+  // Compare opens at 390, where the four designs read side by side.
+  document.getElementById('compare').addEventListener('change', (e) => { st.compare = e.target.checked; if (st.compare) st.width = '390'; draw(); });
+  // Only a change of width redraws: a redraw reloads every frame.
+  let t, lastW = innerWidth; addEventListener('resize', () => { if (innerWidth === lastW) return; lastW = innerWidth; clearTimeout(t); t = setTimeout(draw, 200); });
   draw();
 })();
 </script>
