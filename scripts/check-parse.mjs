@@ -2,7 +2,7 @@
 //
 // The prototype has no linter and no test lane, so a syntax error is found only when a page
 // renders blank. This runs the Babel the pages vendor over every .jsx module and every inline
-// <script type="text/babel"> block of every page.
+// <script type="text/babel"> block of every page, and every page variant under variants/.
 //
 //   node scripts/check-parse.mjs
 //
@@ -24,6 +24,11 @@ const Babel = loaded && loaded.transform ? loaded : globalThis.Babel;
 const pieces = [];
 for (const file of readdirSync(join(ROOT, 'masaha')).filter((f) => f.endsWith('.jsx'))) {
   pieces.push({ label: `masaha/${file}`, code: readFileSync(join(ROOT, 'masaha', file), 'utf8') });
+}
+// Each page variant (variants/<Page>/<name>.jsx) replaces its page's inline block.
+for (const file of readdirSync(join(ROOT, 'variants'), { recursive: true }).filter((f) => f.endsWith('.jsx'))) {
+  const label = `variants/${file.replace(/\\/g, '/')}`;
+  pieces.push({ label, code: readFileSync(join(ROOT, 'variants', file), 'utf8') });
 }
 const files = readdirSync(ROOT).filter((f) => f.endsWith('.html'));
 for (const file of files) {

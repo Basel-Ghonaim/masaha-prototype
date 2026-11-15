@@ -181,3 +181,5 @@ a[data-slot=dropdown-menu-item],[data-slot=dropdown-menu-item] a,a[data-slot=bre
   .pf-contact-row:not(.pf-other) .pf-cell-value{grid-area:1/3}.pf-contact-row:not(.pf-other)>.pf-remove{grid-area:1/4}
   .pf-other .pf-cell-label{grid-area:1/3}.pf-other .pf-cell-value{grid-area:1/4}.pf-other>.pf-remove{grid-area:1/5}
 }
+/* The variant switcher (masaha/variants.js): fixed in the block-end, inline-end corner, above the page and its toasts. */
+.variant-switcher{position:fixed;inset-block-end:.75rem;inset-inline-end:.75rem;z-index:var(--z-toast)}

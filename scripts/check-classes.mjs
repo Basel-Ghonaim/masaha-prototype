@@ -33,10 +33,15 @@ const read = (path) => readFileSync(path, 'utf8');
 const ds = readdirSync(join(ROOT, '_ds')).map((d) => join(ROOT, '_ds', d));
 const pages = readdirSync(ROOT).filter((f) => f.endsWith('.html')).map((f) => join(ROOT, f));
 const modules = readdirSync(join(ROOT, 'masaha')).filter((f) => f.endsWith('.jsx')).map((f) => join(ROOT, 'masaha', f));
+// The variant switcher builds its classes in a plain script; each variant is a module of its page,
+// and its own stylesheet counts as defining classes for every file (a known looseness).
+const variantFiles = readdirSync(join(ROOT, 'variants'), { recursive: true }).map((f) => join(ROOT, 'variants', f));
+const variantModules = [join(ROOT, 'masaha', 'variants.js'), ...variantFiles.filter((f) => f.endsWith('.jsx'))];
 
 const css = [
   ...ds.flatMap((d) => ['_ds_bundle.css', 'styles.css'].map((f) => read(join(d, f)))),
   read(join(ROOT, 'masaha', 'masaha.css')),
+  ...variantFiles.filter((f) => f.endsWith('.css')).map(read),
   ...pages.flatMap((p) => [...read(p).matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)].map((m) => m[1])),
 ].join('\n');
 
@@ -44,7 +49,7 @@ const css = [
 const defined = new Set([...css.matchAll(/\.((?:[\w-]|\\[^\s])+)/g)].map((m) => m[1].replace(/\\(.)/g, '$1')));
 
 const used = new Map();
-for (const file of [...pages, ...modules]) {
+for (const file of [...pages, ...modules, ...variantModules]) {
   const text = read(file);
   const values = [
     ...[...text.matchAll(/(?:className|class)\s*=\s*"([^"]*)"/g)].map((m) => m[1]),
