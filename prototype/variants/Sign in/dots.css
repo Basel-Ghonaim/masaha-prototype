@@ -1,0 +1,3 @@
+/* Sign in in the auth design «dots»: the kit's base, then the design (decisions/auth.md). */
+@import url("../_auth/base.css");
+@import url("../_auth/dots.css");
