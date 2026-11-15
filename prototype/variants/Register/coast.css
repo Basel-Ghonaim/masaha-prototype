@@ -1,0 +1,3 @@
+/* Register in the auth design «coast»: the kit's base, then the design (decisions/auth.md). */
+@import url("../_auth/base.css");
+@import url("../_auth/coast.css");

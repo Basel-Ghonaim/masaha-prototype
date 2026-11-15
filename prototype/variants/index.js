@@ -15,4 +15,8 @@ const AUTH_DESIGNS = [
 ];
 window.MASAHA_VARIANTS = {
   'Sign in': AUTH_DESIGNS,
+  'Register': AUTH_DESIGNS,
+  'Forgot password': AUTH_DESIGNS,
+  'Reset password': AUTH_DESIGNS,
+  'Change password': AUTH_DESIGNS,
 };
