@@ -12,13 +12,14 @@ the berry. Production's facts are masaha's (`docs/features/auth.md`, the copy ca
 and masaha disagree, masaha is right.
 
 **Compare them** in [`prototype/Auth lab.html`](../prototype/Auth%20lab.html): the design, the page, its
-state, the language, the theme and the width (or all three widths, or the four designs at one width), the
-view kept in the address.
+state, the language, the theme and the width (or all three widths), or «قارن التصاميم»: the four designs side by side at 390, two by two at
+768 and 1440 (it opens at 390). The view is kept in the address.
 
 ## How the variants are built
 
 - Each page's variant is `variants/<Page>/<design>.jsx` and `.css`, registered in
-  `variants/index.js` under the three names below. The five files of a design are two lines each: they
+  `variants/index.js` under the three names below (built inside a function, so the file adds no
+  top-level name to the pages' one global scope). The five files of a design are two lines each: they
   load one kit, **`variants/_auth/kit.jsx`**, compiled by the page's own Babel (a synchronous read, once),
   and draw their page; the CSS files import `_auth/base.css` and `_auth/<design>.css`. The page logic is
   one for the three designs, so a state behaves the same in each and only the design differs.
@@ -31,7 +32,8 @@ view kept in the address.
 
 - **The layout (A1):** from 1280 two columns — the form on the start side, no card; the ink panel at the
   end. 768–1279 one column, the h1 at a fixed offset from the top on every page (no vertical centring).
-  The phone: full width, no card, no frame (no line under the header either); fields and buttons 52 px.
+  The phone: full width, no card, no frame (no line under the header either); fields and buttons 52 px (Slate's
+  polish: 48 px).
 - **The Strip (A2):** an inline SVG of about 3 KB, north up, never mirrored with the direction. The
   outline is round 3's approximate one (`ROUND3\directions\_shared\data\strip-outline.json`, "not survey
   data"), its coast smoothed, its land borders straight, **no governorate lines and no place names**.
@@ -47,7 +49,8 @@ view kept in the address.
   edge): the brand's surface, not an action, so it does not invert to `neutral-50`, which would glare
   beside a dark page. On it the dark logo (`masaha-logo-dark-berry.svg`) and the spark at `spark-400`.
 - **The critique's points, in all three:** Google's button in Google's dark theme with no white frame,
-  as wide and as tall as the fields (1, 2); forgot password's form shown at once, the recovery's read a
+  as wide and as tall as the fields (1, 2) — in the drawing only for Coast and Dots; Slate's polish draws
+  it at the box production's Google button has, 40 × at most 400, and sizes the column to it; forgot password's form shown at once, the recovery's read a
   thin bar over it, its failure a note with «إعادة المحاولة» over the form (3); the forced change with
   the language and theme switches beside «تسجيل الخروج» (4); the password conditions as a tick or a dash,
   never a circle (5); one top offset (6); a real h1, 26–40 px, over its line (7); no frame in a frame on
@@ -63,23 +66,60 @@ view kept in the address.
 
 ## Variants
 
-### `slate` — «اللوح» Slate (2026-11-15)
-*The A1 as written: the form quiet on the page, beside it an ink slab with the whole Strip, solid.*
-- **What it changes:** two equal columns; the panel's Strip filled `neutral-800`, edged `neutral-600`,
-  the full height of the panel, at the panel's far side; its title and line sit in the corner the land
-  leaves empty (the bottom of the start side in Arabic, the top in English — the Strip runs north-east to
-  south-west). The form 400 px wide, its h1 at 128 px from the top (72 px on the tablet, 24 px under the
-  header on the phone). States are the design system's alerts. The sent address carries a berry dot. The
-  owner note under the form, on a quiet `muted` block. No motion. Below 1280 no Strip.
+### `slate` — «اللوح» Slate (2026-11-15; polished the same day, after the owner chose it)
+*The A1 as written: the form quiet on the page, beside it an ink slab with the whole Strip, drawn.*
+- **What it changes:**
+  - **The panel:** two equal columns. The Strip the full height of the panel, at its far side: a quiet
+    land (`neutral-800` mixed half into `neutral-900`, its border `neutral-700`), its **coast drawn as
+    its own line**, finer and brighter (`neutral-300`, 1.25 px; 1.5 px from 1440). The spaces are
+    berry dots of a size in **screen pixels** (9 px across, a 1.5 px ring of the panel's colour), so
+    the Strip's scale never shrinks them. Gaza City's nine sit closer together than a dot is wide, so
+    a **circle over the sea** shows that city four times larger, its coast running through it, tied to
+    a ring on the Strip by a thin line: the nine read as nine. All 13 show at 1280, 1440 and 1920 and
+    at the panel's 640 px minimum height. The title, its line and the caption sit in the bottom-right
+    corner the land leaves empty (the start in Arabic, the end in English). On the forced change the
+    panel shows the logo, the drawing and its caption only: no «أين تعمل اليوم؟» to a staff member.
+  - **Dark:** the panel is as deep as the page (`neutral-950`), set apart by its hairline
+    (`neutral-800`) and the drawing (land `neutral-900`): never a lighter grey card.
+  - **Below 1280:** a small solid Strip (27 × 34 px, `neutral-400`; dark `neutral-600`) beside the
+    logo, clear of its 8 px space, its spaces in the berry: the brand's touch on the phone and tablet.
+  - **The form:** 400 px wide, its h1 at 128 px from the top (72 px on the tablet, 24 px under the
+    header on the phone). One **8 px rhythm**: label to field 8, field to its line 8, 24 between
+    fields, 32 to the button and between the head, the body and the foot. The foot is **one quiet
+    group, centred** on the column (the owner's word): the links, and on register the owners' note at
+    its head. The sign-in button has no icon. States are the design system's alerts. The sent
+    address carries a berry dot.
+  - **The column's heights:** Google's row is drawn at the box production's Google button has
+    (`size: large`): **40 px tall, as wide as the column up to 400, its own 4 px corners**; Google's
+    own dark button in dark, no white frame. The fields and the submit are **40 px from 768 with a
+    mouse** (the system's `control-height`, the same 40 as Google's), **44 px on touch** from 768,
+    and **48 px on the phone** — A1's larger controls there, Google's row staying 40.
+  - **The password conditions:** one line under the field, on register, reset and the forced change,
+    the field's description and `aria-live="polite"`: before typing, muted, «8 أحرف على الأقل، فيها
+    حرف ورقم»; while typing, only what is missing («ينقصها رقم»، «ينقصها حرف ورقم»، «ينقصها 3 أحرف
+    لتصل إلى 8»، «ينقصها رقم، وحرفان آخران لتصل إلى 8»…); once all are met, a berry tick and «كلمة
+    المرور مناسبة»; past 72 bytes, production's «طويلة جدًا — اختصرها». A submit with a rule unmet
+    shows production's field error, focused. The rules are production's: 8 characters, any letter
+    `\p{L}`, any digit `\p{N}`.
+  - **Smaller:** «نسيت كلمة المرور؟» and «سجّل الدخول بهذا البريد» take a 44 px target; the panel's
+    logo shows its focus in `neutral-50` on the ink; forgot password's offline note over the form uses
+    the form's words («تعذّر الاتصال»، «تحقّق من اتصالك بالإنترنت ثم حاول مرة أخرى.»). No motion.
 - **Proposed against masaha's design system:**
   - The auth page's h1 at `heading-1` (30 px; 28 on the phone) instead of the card title's 17 px —
     *the page needs a title, not a card's.*
   - The panel's title at 40 / 1.35 / 600, a step between `heading-1` and `display` — *the brand's line,
     seen from across the room on a 1440 screen.*
-  - Controls at 44 px on desktop and 52 px on the phone (`control-height` is 40 / 44) — *A1's larger
-    fields; one size for the field, Google's button and the submit.*
-  - The panel: a full-height ink surface, a new surface the system does not have.
+  - Controls of 48 px on the phone (`control-height` is 40, 44 on touch) — *A1's larger fields where
+    thumbs are*; from 768 the system's own heights, matching Google's 40.
+  - The panel: a full-height ink surface, a new surface; in dark, `neutral-950` with a hairline.
+  - The password's rules as one line of what is missing, replacing `PasswordRules`' checklist (the
+    owner's choice) — *the heaviest element of the page becomes one quiet line.*
+  - A drawing of the Strip with a magnified circle: a new kind of figure.
 - **Kept:** the system's alerts, type face and weights, its radii; the order of the form.
+- **Coast and Dots are kept as they were** when the owner chose Slate: the polish is behind Slate's own
+  flag (`polish` in the kit's `AX_DESIGNS`) and stylesheet. Two fixes reach all three, as they change
+  nothing seen: the digit rule is production's `\p{N}` (it was 0–9 and ٠–٩), and an effect that did
+  nothing was removed.
 
 ### `coast` — «الساحل» Coast (2026-11-15)
 *The Strip as a drawn line: the coast drawn in once, cropped by a narrower panel; on the phone it
@@ -142,7 +182,12 @@ word «مساحة», as production's e-mail has it; production's words and its l
 | The Strip's caption | كل نقطة مساحة عمل في الدليل | Each dot is a space in the directory |
 | The Strip's name (assistive) | رسم لقطاع غزة، عليه مساحات العمل في الدليل | A drawing of the Gaza Strip, with the directory's coworking spaces on it |
 | The Strip's description (assistive) | رسم فنّي لا خريطة. النقاط من بيانات الدليل في 14 نوفمبر 2026. | An artistic drawing, not a map. The dots are from the directory's data of 14 November 2026. |
-| The letter rule (replaces «حرف واحد على الأقل») | حرف واحد على الأقل، بأي لغة | At least one letter, in any language |
+| The letter rule (replaces «حرف واحد على الأقل»; Coast and Dots) | حرف واحد على الأقل، بأي لغة | At least one letter, in any language |
+| Slate's password line, before typing | 8 أحرف على الأقل، فيها حرف ورقم | At least 8 characters, with a letter and a number |
+| … while typing: a letter, a digit, both | ينقصها حرف · ينقصها رقم · ينقصها حرف ورقم | Needs a letter · Needs a number · Needs a letter and a number |
+| … while typing: the length alone (1, 2, 3–7) | ينقصها حرف واحد / حرفان / N أحرف لتصل إلى 8 | Needs 1 more character / N more characters to reach 8 |
+| … while typing: both | ينقصها رقم، وحرف آخر / وحرفان آخران / وN أحرف أخرى لتصل إلى 8 | Needs a number and N more characters to reach 8 · Needs a letter, a number and N more characters to reach 8 |
+| … once met (after a berry tick) | كلمة المرور مناسبة | Good password |
 
 ## States
 
@@ -169,6 +214,9 @@ password, by design (the API never says which): its state is `error`.
 
 ## The owner's choice
 
-- Not yet.
+- 2026-11-15 — **`slate` «اللوح» chosen**: "the one I like most, but it has errors and needs work to
+  look more professional". Coast and Dots stay as they are, with no more work on them. Slate then had
+  one polish round (above), from the review of the three designs and the supervisor's look at its
+  captures; the one-line password conditions and the centred foot are the owner's own points.
 - Promoted into the original: not yet.
 - Built in masaha: not yet.
