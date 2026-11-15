@@ -1,10 +1,10 @@
 // Parse every prototype source the way the browser will.
 //
-// docs/design/ is outside ESLint and Prettier and no test lane owns it, so a syntax error is
-// found only when a page renders blank. This runs the Babel the pages vendor over every .jsx
-// module and every inline <script type="text/babel"> block of every page.
+// The prototype has no linter and no test lane, so a syntax error is found only when a page
+// renders blank. This runs the Babel the pages vendor over every .jsx module and every inline
+// <script type="text/babel"> block of every page.
 //
-//   node docs/design/scripts/check-parse.mjs
+//   node scripts/check-parse.mjs
 //
 // It sees syntax only: a page that parses can still fail at runtime, or draw a block twice.
 
@@ -15,10 +15,11 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', 'prototype');
 
-// The vendored Babel is a UMD build. The repository's `"type": "module"` makes Node load it as an
-// ES module, where it finds no `exports` and no `define`, so it sets `globalThis.Babel` itself.
-createRequire(import.meta.url)(join(ROOT, '_vendor', 'babel.min.js'));
-const { Babel } = globalThis;
+// The vendored Babel is a UMD build. Loaded as CommonJS (this repository has no package.json), it
+// sets `module.exports`; loaded as an ES module (under a `"type": "module"` package, as it was in
+// masaha), it finds no `exports` and sets `globalThis.Babel`. Take whichever is set.
+const loaded = createRequire(import.meta.url)(join(ROOT, '_vendor', 'babel.min.js'));
+const Babel = loaded && loaded.transform ? loaded : globalThis.Babel;
 
 const pieces = [];
 for (const file of readdirSync(join(ROOT, 'masaha')).filter((f) => f.endsWith('.jsx'))) {

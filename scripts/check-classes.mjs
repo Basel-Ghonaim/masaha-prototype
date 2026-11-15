@@ -5,7 +5,7 @@
 // every class written in a page or a module and looks for it in the vendored stylesheets,
 // masaha/masaha.css and the pages' own <style> blocks.
 //
-//   node docs/design/scripts/check-classes.mjs
+//   node scripts/check-classes.mjs
 //
 // It fails on a dead class that KNOWN below does not list for that file. It reads only the class
 // names written literally in `class="…"` or `className="…"`: a class chosen in a condition
