@@ -218,5 +218,8 @@ password, by design (the API never says which): its state is `error`.
   look more professional". Coast and Dots stay as they are, with no more work on them. Slate then had
   one polish round (above), from the review of the three designs and the supervisor's look at its
   captures; the one-line password conditions and the centred foot are the owner's own points.
+- 2026-11-15 — **the owner's mix for Slate's drawing**, drawn by the supervisor: the land as a fine dot grid, the coast one bright line with three faint sea lines, the 13 real spaces in the berry, and a berry lens over the sea that shows Gaza City ×3.5 — fully over the sea (the earlier circle edged onto the land). The phone's small Strip mark is removed (it read as a stray icon).
+- 2026-11-15 — **the panel is the deepest surface in both themes**: in dark a step deeper than the page in the same cool ink (`neutral-950` 70 % with black). A berry-tinted panel was tried and rejected by the owner (two blacks of different hue, and lighter than the page).
+- 2026-11-15 — **the order** (the owner's points): register's owners' note under the lede, before the form; the privacy line under the button; the foot one line («لديك حساب؟ تسجيل الدخول» / «ليس لديك حساب؟ إنشاء حساب») — «العودة إلى الرئيسية» dropped from sign in and register, the logo being the way home. Forgot and reset keep their way back to sign in.
 - Promoted into the original: not yet.
 - Built in masaha: not yet.

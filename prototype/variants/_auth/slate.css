@@ -48,35 +48,34 @@
 /* The address the link went to: a berry dot beside it. */
 .ax--slate .ax-sentto-dot { display: block; width: 8px; height: 8px; border-radius: 999px; background: var(--spark); }
 
-/* The foot: one quiet group, centred on the column (the owner's word), the owners' note in it. */
+/* The foot: one quiet line, centred on the column (the owner's word). */
 .ax--slate .ax-foot { align-items: center; gap: 8px; padding-block-start: 24px; border-block-start: 1px solid var(--border); text-align: center; }
-.ax--slate .ax-foot .ax-owner { max-width: 34ch; margin-block-end: 8px; font-size: 13px; line-height: 1.7; text-wrap: balance; }
+/* The order (the owner's word, 2026-11-15): the owners' note under the lede, read before the form; the privacy
+   line under the button it concerns; the foot one line — the logo is the way home. */
+.ax--slate .ax-owner { font-size: 13px; line-height: 1.7; }
+.ax--slate .ax-privacy { margin: 0; text-align: center; font-size: 13px; line-height: 1.7; color: var(--muted-foreground); }
 
-/* The phone's and tablet's touch of the brand: the Strip as a small mark beside the logo, clear of its
-   8 px space, with the spaces in the berry. */
-.ax--slate .ax-mark-strip { display: block; flex: none; width: 27px; height: 34px; margin-inline-start: 4px; }
-.ax--slate .ax-mark-strip .ax-strip-land { fill: var(--neutral-400); stroke: none; }
-[data-theme=dark] .ax--slate .ax-mark-strip .ax-strip-land { fill: var(--neutral-600); }
-.ax--slate .ax-mark-strip .ax-strip-dot { fill: var(--spark); stroke: var(--background); stroke-width: 1px; }
+/* The panel is the deepest surface in both themes (the owner's word, 2026-11-15): ink beside a light page, and
+   in dark a step deeper than the page, in the same cool ink — never lighter, never another hue; the berry stays
+   in the drawing. The hairline stays. */
+[data-theme=dark] .ax--slate { --ax-ink: color-mix(in oklab, var(--neutral-950) 70%, black); }
 
-/* The panel in dark: as deep as the page, set apart by its hairline and its drawing, never a grey card. */
-[data-theme=dark] .ax--slate { --ax-ink: var(--neutral-950); }
-
-/* The drawing: a quiet land, its coast finer and brighter than its border, Gaza City's circle. */
-.ax--slate .ax-strip-land { fill: color-mix(in oklab, var(--neutral-800) 55%, var(--neutral-900)); stroke: var(--neutral-700); stroke-width: 1px; }
-[data-theme=dark] .ax--slate .ax-strip-land { fill: var(--neutral-900); stroke: var(--neutral-800); }
+/* The drawing (the owner's mix, 2026-11-15): the land a fine dot grid, the coast one bright line, three faint
+   sea lines offshore, the lens and its ring in the berry. Sizes are screen pixels (the kit measures). */
 .ax--slate .ax-strip--drawn { overflow: hidden; }
-.ax--slate .ax-strip-land--inset { stroke: none; }
-.ax--slate .ax-strip-coast { fill: none; stroke: var(--neutral-300); stroke-width: 1.25px; stroke-linecap: round; }
-.ax--slate .ax-strip-ring { fill: none; stroke: var(--neutral-400); stroke-width: 1px; }
-.ax--slate .ax-strip-lead { stroke: var(--neutral-500); stroke-width: 1px; }
+.ax--slate .ax-strip-gridot { fill: var(--neutral-400); fill-opacity: .85; }
+.ax--slate .ax-strip-sea { fill: none; stroke: var(--neutral-400); stroke-width: 1px; stroke-linecap: round; stroke-linejoin: round; }
+.ax--slate .ax-strip-sea--1 { stroke-opacity: .5; }
+.ax--slate .ax-strip-sea--2 { stroke-opacity: .34; }
+.ax--slate .ax-strip-sea--3 { stroke-opacity: .2; }
+.ax--slate .ax-strip-coast { fill: none; stroke: var(--neutral-50); stroke-width: 1.6px; stroke-linecap: round; stroke-linejoin: round; }
+.ax--slate .ax-strip-ring { fill: none; stroke: var(--spark-500); stroke-width: 1.2px; }
+.ax--slate .ax-strip-lead { stroke: var(--spark-500); stroke-width: 1.2px; }
 .ax--slate .ax-strip-inset { fill: var(--ax-ink); stroke: none; }
-.ax--slate .ax-strip-inset-edge { fill: none; stroke: var(--neutral-500); stroke-width: 1px; }
+.ax--slate .ax-strip-inset-edge { fill: none; stroke: var(--spark-500); stroke-width: 1.5px; }
 .ax--slate .ax-strip-dot { fill: var(--ax-spark-on-ink); stroke: var(--ax-ink); }
-.ax--slate .ax-strip-dot--far { stroke: none; opacity: .9; }
 
 @media (min-width: 1280px) {
-  .ax--slate .ax-mark-strip { display: none; }
   .ax--slate .ax-panel { padding: 48px 56px 44px; }
   .ax--slate .ax-panel .ax-logo:focus-visible { outline-color: var(--neutral-50); }
   .ax--slate .ax-panel-title { font-size: 40px; line-height: 1.35; }
@@ -93,5 +92,4 @@
   .ax--slate .ax-panel-art { inset: 104px 40px 56px 40px; }
 }
 @media (min-width: 1440px) {
-  .ax--slate .ax-strip-coast { stroke-width: 1.5px; }
 }

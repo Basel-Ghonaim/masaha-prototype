@@ -13,7 +13,7 @@
   // drawn Strip with Gaza City's inset, the mark on the phone, the one-line password conditions, the
   // form's offline words on forgot password, and the forced change's panel without its words.
   const AX_DESIGNS = {
-    slate: { ownerNote: 'foot', wayBackTop: false, polish: true },
+    slate: { ownerNote: 'top', wayBackTop: false, polish: true },
     coast: { ownerNote: 'top', wayBackTop: true },
     dots: { ownerNote: 'top', wayBackTop: false },
   };
@@ -192,7 +192,7 @@
   // North to south, for the dots that appear in turn.
   const AX_DOTS_NS = AX_DOTS.slice().sort((a, b) => a.xy[1] - b.xy[1]);
 
-  // kind: solid (Slate) · line (Coast) · grid (Dots). r is the dot's radius in the drawing's units.
+  // kind: line (Coast) · grid (Dots); Slate draws its own (AxSlateStrip). r is the dot's radius in the drawing's units.
   function AxStrip({ kind, viewBox, align, r, grid, grain, className, motion, decorative }) {
     const uid = ('ax' + React.useId().replace(/[^a-zA-Z0-9_-]/g, ''));
     const vb = viewBox || `-12 -12 ${AX_W + 24} ${AX_H + 24}`;
@@ -209,7 +209,6 @@
             <clipPath id={uid + 'c'}><path d={AX_SHAPE} /></clipPath>
           </defs>
         )}
-        {kind === 'solid' && <path d={AX_SHAPE} className="ax-strip-land" vectorEffect="non-scaling-stroke" />}
         {kind === 'line' && (
           <g className={motion ? 'ax-draw-on' : undefined}>
             <path d={axCoastD(14)} className="ax-strip-echo ax-strip-echo--2" pathLength="1" vectorEffect="non-scaling-stroke" />
@@ -232,14 +231,15 @@
     );
   }
 
-  // Slate's Strip (its polish round): the land quiet, the coast drawn finer and brighter than the land's
-  // border, the spaces as dots of a size in screen pixels. Nine of them sit within 2 km in Gaza City,
-  // closer than a dot is wide at this scale, so a circle over the sea shows that city four times larger,
-  // tied to it by a line: the nine read as nine. Measured once it is laid out, and again on a resize.
+  // Slate's Strip (the owner's mix, 2026-11-15, decisions/auth.md): the land as a fine dot grid, the coast one
+  // bright line with three faint sea lines offshore, the spaces in the berry. Nine of them sit within 2 km in Gaza
+  // City, closer than a dot is wide at this scale, so a lens over the sea shows the city 3.5 times larger, tied to
+  // a berry ring on the Strip by a line: the nine read as nine. The lens stays over the sea. Grid, strokes and dots
+  // keep their screen size: measured once laid out, and again on a resize.
   const AX_CITY = AX_DOTS.slice(0, 9);
   const AX_CX = AX_CITY.reduce((a, d) => a + d.xy[0], 0) / 9, AX_CY = AX_CITY.reduce((a, d) => a + d.xy[1], 0) / 9;
-  // The circle's view is centred a little west of the city, so its coast runs through it.
-  const AX_INSET = { x: 70, y: 112, r: 64, m: 4, vx: 192, vy: AX_CY };
+  // The lens's view is centred a little west of the city, so its coast runs through it.
+  const AX_INSET = { x: 62, y: 100, r: 62, m: 3.5, vx: 191, vy: AX_CY };
   function AxSlateStrip({ align }) {
     const ref = React.useRef(null);
     const [k, setK] = React.useState(0);
@@ -261,26 +261,38 @@
     const dx = AX_CX - I.x, dy = AX_CY - I.y, len = Math.hypot(dx, dy);
     const lead = [I.x + (dx / len) * I.r, I.y + (dy / len) * I.r, AX_CX - (dx / len) * ringR, AX_CY - (dy / len) * ringR];
     const others = AX_DOTS.slice(9);
+    const step = u(7), dot = u(1.25);
     return (
       <svg ref={ref} className="ax-strip ax-strip--drawn" viewBox={vb.join(' ')} preserveAspectRatio={align} role="img" aria-labelledby={uid + 't ' + uid + 'd'} focusable="false">
         <title id={uid + 't'}>{W.stripName}</title>
         <desc id={uid + 'd'}>{W.stripDesc}</desc>
-        <defs><clipPath id={uid + 'c'}><circle cx={I.x} cy={I.y} r={I.r} /></clipPath></defs>
-        <path d={AX_SHAPE} className="ax-strip-land" vectorEffect="non-scaling-stroke" />
+        <defs>
+          <pattern id={uid + 'g'} width={step} height={step} patternUnits="userSpaceOnUse">
+            <circle cx={step / 2} cy={step / 2} r={dot} className="ax-strip-gridot" />
+          </pattern>
+          {/* Inside the lens the drawing is scaled 3.5 times: its grid is drawn 3.5 times finer, so it keeps
+              the same screen size there. */}
+          <pattern id={uid + 'gi'} width={step / I.m} height={step / I.m} patternUnits="userSpaceOnUse">
+            <circle cx={step / I.m / 2} cy={step / I.m / 2} r={dot / I.m} className="ax-strip-gridot" />
+          </pattern>
+          <clipPath id={uid + 'c'}><circle cx={I.x} cy={I.y} r={I.r} /></clipPath>
+        </defs>
+        {[[18, 'ax-strip-sea ax-strip-sea--1'], [36, 'ax-strip-sea ax-strip-sea--2'], [54, 'ax-strip-sea ax-strip-sea--3']].map(([d, cls]) => <path key={d} d={axCoastD(u(d))} className={cls} vectorEffect="non-scaling-stroke" />)}
+        <path d={AX_SHAPE} fill={`url(#${uid}g)`} />
         <path d={axCoastD(0)} className="ax-strip-coast" vectorEffect="non-scaling-stroke" />
         <circle cx={AX_CX} cy={AX_CY} r={ringR} className="ax-strip-ring" vectorEffect="non-scaling-stroke" />
         <line x1={lead[0]} y1={lead[1]} x2={lead[2]} y2={lead[3]} className="ax-strip-lead" vectorEffect="non-scaling-stroke" />
-        {AX_CITY.map((d) => <circle key={d.id} cx={d.xy[0]} cy={d.xy[1]} r={u(2)} className="ax-strip-dot ax-strip-dot--far" />)}
+        {AX_CITY.map((d) => <circle key={d.id} cx={d.xy[0]} cy={d.xy[1]} r={u(2.5)} className="ax-strip-dot" style={{ strokeWidth: u(1) }} />)}
         {others.map((d) => <circle key={d.id} cx={d.xy[0]} cy={d.xy[1]} r={u(4.5)} className="ax-strip-dot" style={{ strokeWidth: u(1.5) }} />)}
-        <circle cx={I.x} cy={I.y} r={I.r} className="ax-strip-inset" vectorEffect="non-scaling-stroke" />
+        <circle cx={I.x} cy={I.y} r={I.r} className="ax-strip-inset" />
         <g clipPath={`url(#${uid}c)`}>
           <g transform={`translate(${I.x} ${I.y}) scale(${I.m}) translate(${-I.vx} ${-I.vy})`}>
-            <path d={AX_SHAPE} className="ax-strip-land ax-strip-land--inset" vectorEffect="non-scaling-stroke" />
+            <path d={AX_SHAPE} fill={`url(#${uid}gi)`} />
             <path d={axCoastD(0)} className="ax-strip-coast" vectorEffect="non-scaling-stroke" />
           </g>
         </g>
         <circle cx={I.x} cy={I.y} r={I.r} className="ax-strip-inset-edge" vectorEffect="non-scaling-stroke" />
-        {AX_CITY.map((d) => { const p = inI(d.xy); return <circle key={d.id} cx={p[0]} cy={p[1]} r={u(4.5)} className="ax-strip-dot" style={{ strokeWidth: u(1.5) }} />; })}
+        {AX_CITY.map((d) => { const p = inI(d.xy); return <circle key={d.id} cx={p[0]} cy={p[1]} r={u(6.5)} className="ax-strip-dot" style={{ strokeWidth: u(2) }} />; })}
       </svg>
     );
   }
@@ -317,7 +329,6 @@
               )}
               <header className="ax-top">
                 <AxLogo link={linkHome} />
-                {AX_DESIGNS[design].polish && <AxStrip kind="solid" decorative className="ax-mark-strip" r={26} />}
                 {AX_DESIGNS[design].wayBackTop && wayBack && <div className="ax-top-back">{wayBack}</div>}
                 <AxTools theme={theme} setTheme={setTheme} signOutButton={signOutButton} />
               </header>
@@ -513,7 +524,7 @@
         </div>
         <div className="ax-foot">
           <p className="ax-foot-line">{W.signIn.noAccount} <a className="ax-link" href={withNext('Register.html')}>{W.signIn.create}</a></p>
-          <div className="ax-foot-back"><AxWayBack /></div>
+          {!AX_DESIGNS[design].polish && <div className="ax-foot-back"><AxWayBack /></div>}
         </div>
       </AxFrame>
     );
@@ -584,13 +595,14 @@
             </div>
             <AxPassword label={W.password} value={v.password} onChange={set('password')} error={errors.password} autoComplete="new-password" conditions submitted={submitted} line={AX_DESIGNS[design].polish} />
             <Button type="submit" className="w-full ax-submit" loading={loading} disabled={left > 0}>{W.register.submit}</Button>
+            {AX_DESIGNS[design].polish && <p className="ax-privacy">{W.register.privacyRead} <a className="ax-link" href="Privacy.html">{W.register.privacyLink}</a></p>}
           </form>
         </div>
         <div className="ax-foot">
           {at === 'foot' && owner}
           <p className="ax-foot-line">{W.register.have} <a className="ax-link" href={withNext('Sign in.html')}>{W.register.signIn}</a></p>
-          <p className="ax-foot-small">{W.register.privacyRead} <a className="ax-link" href="Privacy.html">{W.register.privacyLink}</a></p>
-          <div className="ax-foot-back"><AxWayBack /></div>
+          {!AX_DESIGNS[design].polish && <p className="ax-foot-small">{W.register.privacyRead} <a className="ax-link" href="Privacy.html">{W.register.privacyLink}</a></p>}
+          {!AX_DESIGNS[design].polish && <div className="ax-foot-back"><AxWayBack /></div>}
         </div>
       </AxFrame>
     );
