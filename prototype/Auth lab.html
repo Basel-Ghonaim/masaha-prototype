@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="light">
+<head>
+<meta charset="utf-8">
+<link rel="icon" type="image/svg+xml" href="masaha/favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>مختبر صفحات الدخول — مساحة</title>
+<link rel="stylesheet" href="_ds/masaha-design-system-bde31931-75b2-4a5c-a81f-9e2963a5815a/fonts/fonts.css">
+<link rel="stylesheet" href="_ds/masaha-design-system-bde31931-75b2-4a5c-a81f-9e2963a5815a/_ds_bundle.css">
+<link rel="stylesheet" href="masaha/masaha.css">
+<link rel="stylesheet" href="masaha/identity-ink-spark.css">
+<script src="masaha/i18n.js"></script>
+<style>
+/* The auth lab (decisions/auth.md › The lab): the auth pages' designs side by side. It edits no page: each
+   frame is the page itself, its variant chosen by ?v=, its switcher hidden inside the frame. Its own
+   choices live in its address, so a view can be sent as a link. */
+.lab{min-height:100dvh;background:var(--background);color:var(--foreground);font-family:var(--font-ar);font-size:14px}
+.lab-bar{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;align-items:flex-end;gap:12px 20px;padding:14px 20px;background:var(--background);border-block-end:1px solid var(--border)}
+.lab-brand{display:flex;align-items:center;gap:12px;margin-inline-end:auto;min-width:220px}
+.lab-logo{display:block;height:36px;aspect-ratio:2473/903;background:url(masaha/logo/masaha-logo-berry.svg) no-repeat center/contain;border-radius:4px}
+[data-theme=dark] .lab-logo{background-image:url(masaha/logo/masaha-logo-dark-berry.svg)}
+.lab-logo:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+.lab-title{margin:0;font-size:17px;font-weight:600;line-height:1.4}
+.lab-sub{margin:0;font-size:12px;color:var(--muted-foreground)}
+.lab-group{display:flex;flex-direction:column;gap:4px;border:0;margin:0;padding:0;min-width:0}
+.lab-group>legend,.lab-label{padding:0;margin-block-end:4px;font-size:12px;font-weight:500;color:var(--muted-foreground)}
+.lab-seg{display:inline-flex;flex-wrap:wrap;gap:2px;padding:2px;border-radius:8px;background:var(--muted)}
+.lab-seg button{min-height:36px;padding:0 12px;border:0;border-radius:6px;background:transparent;color:var(--muted-foreground);font:inherit;font-weight:500;cursor:pointer;white-space:nowrap}
+.lab-seg button:hover{color:var(--foreground);background:var(--hover-on-muted)}
+.lab-seg button[aria-pressed=true]{background:var(--card);color:var(--foreground);box-shadow:inset 0 -2px 0 var(--spark),0 1px 2px rgb(15 30 40/.08)}
+.lab-seg button:focus-visible,.lab-select:focus-visible,.lab-check input:focus-visible,.lab-open:focus-visible{outline:2px solid var(--ring);outline-offset:2px}
+.lab-select{min-height:40px;min-width:170px;padding:0 10px;border:1px solid var(--input);border-radius:6px;background:var(--card);color:var(--foreground);font:inherit}
+.lab-check{display:inline-flex;align-items:center;gap:8px;min-height:40px;font-weight:500;cursor:pointer}
+.lab-check input{width:18px;height:18px;accent-color:var(--primary)}
+.lab-note{margin:0;padding:10px 20px 0;font-size:13px;color:var(--muted-foreground)}
+.lab-stage{display:flex;gap:24px;align-items:flex-start;padding:16px 20px 40px;overflow-x:auto}
+.lab-frame{display:flex;flex-direction:column;gap:8px;flex:none}
+.lab-cap{display:flex;align-items:baseline;gap:10px;font-size:13px}
+.lab-cap b{font-weight:600}
+.lab-cap span{color:var(--muted-foreground)}
+.lab-open{display:inline-flex;align-items:center;min-height:32px;margin-inline-start:auto;color:var(--primary);font-weight:500;text-decoration:underline;text-underline-offset:.25em;border-radius:2px}
+.lab-box{position:relative;overflow:hidden;border:1px solid var(--border);border-radius:8px;background:var(--card)}
+.lab-box iframe{position:absolute;inset-block-start:0;inset-inline-start:0;border:0;transform-origin:top left;background:var(--background)}
+html[dir=rtl] .lab-box iframe{transform-origin:top right}
+.lab-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+</style>
+</head>
+<body class="bg-background text-foreground">
+<div class="lab">
+  <div class="lab-bar" role="toolbar" aria-label="">
+    <div class="lab-brand">
+      <a class="lab-logo" href="Home.html"><span class="lab-sr" data-t="home"></span></a>
+      <div><h1 class="lab-title" data-t="title"></h1><p class="lab-sub" data-t="sub"></p></div>
+    </div>
+    <fieldset class="lab-group"><legend data-t="design"></legend><div class="lab-seg" id="design"></div></fieldset>
+    <div class="lab-group"><label class="lab-label" for="page" data-t="page"></label><select class="lab-select" id="page"></select></div>
+    <div class="lab-group"><label class="lab-label" for="state" data-t="state"></label><select class="lab-select" id="state"></select></div>
+    <fieldset class="lab-group"><legend data-t="lang"></legend><div class="lab-seg" id="lang"></div></fieldset>
+    <fieldset class="lab-group"><legend data-t="theme"></legend><div class="lab-seg" id="theme"></div></fieldset>
+    <fieldset class="lab-group"><legend data-t="width"></legend><div class="lab-seg" id="width"></div></fieldset>
+    <div class="lab-group"><span class="lab-label" aria-hidden="true">&nbsp;</span><label class="lab-check"><input type="checkbox" id="compare"><span data-t="compare"></span></label></div>
+  </div>
+  <p class="lab-note" id="note" aria-live="polite"></p>
+  <main class="lab-stage" id="stage"></main>
+</div>
+<script>
+(function () {
+  const T = {
+    home: tr('مساحة — الرئيسية', 'Masaha — home'),
+    title: tr('مختبر صفحات الدخول', 'Auth lab'),
+    sub: tr('ثلاثة تصاميم لكل صفحة، بجانب الأصل', 'Three designs of every page, beside the original'),
+    bar: tr('خيارات العرض', 'View options'),
+    design: tr('التصميم', 'Design'), page: tr('الصفحة', 'Page'), state: tr('الحالة', 'State'),
+    lang: tr('اللغة', 'Language'), theme: tr('المظهر', 'Theme'), width: tr('العرض', 'Width'),
+    compare: tr('قارن التصاميم', 'Compare designs'),
+    light: tr('فاتح', 'Light'), dark: tr('داكن', 'Dark'), all: tr('الثلاثة معًا', 'All three'),
+    open: tr('افتح الصفحة كاملة', 'Open the full page'),
+    notInOriginal: tr('الأصل لا يرسم هذه الحالة؛ يظهر بحالته الأولى.', 'The original doesn’t draw this state; it shows its first one.'),
+    email: tr('الرسالة ثنائية اللغة وفاتحة دائمًا، كما في الإنتاج: اللغة والمظهر لا يغيّرانها.', 'The e-mail is bilingual and always light, as in production: language and theme don’t change it.'),
+    compareNote: tr('مقارنة: الصفحة والحالة نفسها، الأصل والتصاميم الثلاثة بعرض واحد.', 'Comparing: one page and state, the original and the three designs at one width.'),
+  };
+  const DESIGNS = [
+    { id: 'orig', label: tr('الأصل', 'Original') },
+    { id: 'slate', label: tr('اللوح', 'Slate') },
+    { id: 'coast', label: tr('الساحل', 'Coast') },
+    { id: 'dots', label: tr('النقاط', 'Dots') },
+  ];
+  // Each page and its states; `o: false` marks a state the original has no drawing of, and `og` the
+  // original's own parameter for it where it has one under another name.
+  const S = (id, ar, en, extra) => Object.assign({ id, label: tr(ar, en) }, extra || {});
+  const PAGES = [
+    { id: 'signin', file: 'Sign in', label: tr('تسجيل الدخول', 'Sign in'), states: [S('default', 'الافتراضية', 'Default'), S('error', 'بريد أو كلمة مرور خاطئة', 'Wrong email or password'), S('google', 'حساب بالبريد يحاول Google', 'Google: account has a password', { og: 'google=notallowed' }), S('ratelimit', 'محاولات كثيرة', 'Rate limit'), S('offline', 'دون اتصال', 'Offline', { o: false }), S('loading', 'قيد الإرسال', 'Pending'), S('idle', 'انتهت الجلسة لعدم النشاط', 'Session ended (idle)', { o: false })] },
+    { id: 'register', file: 'Register', label: tr('إنشاء حساب', 'Register'), states: [S('default', 'الافتراضية', 'Default'), S('typing', 'الشروط تتحقّق أثناء الكتابة', 'Rules as you type'), S('filled', 'كل الشروط متحقّقة', 'All rules met'), S('errors', 'أخطاء الحقول', 'Field errors'), S('exists', 'البريد له حساب', 'Email has an account'), S('toolong', 'كلمة مرور طويلة جدًا', 'Password too long'), S('ratelimit', 'محاولات كثيرة', 'Rate limit'), S('network', 'دون اتصال', 'Offline'), S('loading', 'قيد الإرسال', 'Pending')] },
+    { id: 'forgot', file: 'Forgot password', label: tr('نسيت كلمة المرور', 'Forgot password'), states: [S('default', 'الطلب', 'The request', { og: 'state=request' }), S('loading', 'قراءة الطلب السابق', 'Reading the recovery'), S('sent', 'أُرسل الرابط', 'Link sent'), S('spent', 'حدّ إعادة الإرسال', 'Resend limit'), S('ratelimit', 'محاولات كثيرة', 'Rate limit'), S('linkopen', 'رابط مفتوح', 'A link is open'), S('unreachable', 'دون اتصال', 'Offline'), S('failed', 'خطأ عام', 'General error', { o: false })] },
+    { id: 'reset', file: 'Reset password', label: tr('تعيين كلمة مرور جديدة', 'Reset password'), states: [S('default', 'كلمة المرور الجديدة', 'The new password'), S('typing', 'أثناء الكتابة', 'Typing'), S('loading', 'التحقّق من الرابط', 'Checking the link'), S('invalid', 'رابط غير صالح', 'Link invalid'), S('checkfailed', 'تعذّر التحقّق', 'Check refused'), S('unreachable', 'دون اتصال', 'Check unreachable'), S('success', 'حُفظت', 'Saved')] },
+    { id: 'change', file: 'Change password', label: tr('تغيير كلمة المرور المؤقتة', 'Forced password change'), states: [S('default', 'الافتراضية', 'Default'), S('typing', 'أثناء الكتابة', 'Typing'), S('errors', 'الشروط غير متحقّقة', 'Rules not met', { o: false }), S('offline', 'دون اتصال', 'Offline', { o: false })] },
+    { id: 'email', file: 'Reset email', label: tr('رسالة الاستعادة', 'Reset e-mail'), states: [S('default', 'الرسالة', 'The e-mail')] },
+  ];
+  const WIDTHS = [{ id: '390', h: 844 }, { id: '768', h: 1024 }, { id: '1440', h: 900 }];
+  const q = new URLSearchParams(location.search);
+  const st = {
+    design: DESIGNS.some((d) => d.id === q.get('design')) ? q.get('design') : 'slate',
+    page: PAGES.some((p) => p.id === q.get('page')) ? q.get('page') : 'signin',
+    state: q.get('state') || 'default',
+    width: ['390', '768', '1440', 'all'].includes(q.get('width')) ? q.get('width') : '1440',
+    compare: q.get('compare') === '1',
+  };
+  const page = () => PAGES.find((p) => p.id === st.page);
+  if (!page().states.some((s) => s.id === st.state)) st.state = 'default';
+
+  document.querySelectorAll('[data-t]').forEach((el) => { el.textContent = T[el.dataset.t]; });
+  document.querySelector('.lab-bar').setAttribute('aria-label', T.bar);
+
+  function save() {
+    const p = new URLSearchParams();
+    p.set('design', st.design); p.set('page', st.page); p.set('state', st.state); p.set('width', st.width);
+    if (st.compare) p.set('compare', '1');
+    if (LANG === 'en') p.set('lang', 'en');
+    if (document.documentElement.dataset.theme === 'dark') p.set('theme', 'dark');
+    history.replaceState(null, '', '?' + p.toString());
+  }
+  function seg(id, items, current, onPick) {
+    const box = document.getElementById(id); box.textContent = '';
+    for (const it of items) {
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = it.label;
+      b.setAttribute('aria-pressed', String(it.id === current));
+      if (it.lang) b.lang = it.lang;
+      b.addEventListener('click', () => onPick(it.id));
+      box.appendChild(b);
+    }
+  }
+  function src(designId, w) {
+    const p = page(); const s = p.states.find((x) => x.id === st.state);
+    if (p.id === 'email') return designId === 'orig' ? 'Reset email.html' : 'variants/Reset email/' + designId + '.html';
+    const params = ['switcher=0'];
+    if (designId !== 'orig') params.push('v=' + designId);
+    if (designId === 'orig' && s.og) params.push(s.og);
+    else if (st.state !== 'default') params.push('state=' + st.state);
+    if (LANG === 'en') params.push('lang=en');
+    if (document.documentElement.dataset.theme === 'dark') params.push('theme=dark');
+    return encodeURI(p.file + '.html') + '?' + params.join('&');
+  }
+  function frames() {
+    if (st.compare) return DESIGNS.map((d) => ({ d, w: WIDTHS.find((x) => x.id === (st.width === 'all' ? '1440' : st.width)) }));
+    const ws = st.width === 'all' ? WIDTHS : [WIDTHS.find((x) => x.id === st.width)];
+    return ws.map((w) => ({ d: DESIGNS.find((x) => x.id === st.design), w }));
+  }
+  function draw() {
+    seg('design', DESIGNS, st.compare ? null : st.design, (v) => { st.design = v; st.compare = false; draw(); });
+    const sel = document.getElementById('page'); sel.textContent = '';
+    for (const p of PAGES) { const o = document.createElement('option'); o.value = p.id; o.textContent = p.label; o.selected = p.id === st.page; sel.appendChild(o); }
+    const ss = document.getElementById('state'); ss.textContent = '';
+    for (const s of page().states) { const o = document.createElement('option'); o.value = s.id; o.textContent = s.label; o.selected = s.id === st.state; ss.appendChild(o); }
+    ss.disabled = page().states.length < 2;
+    seg('lang', [{ id: 'ar', label: 'العربية', lang: 'ar' }, { id: 'en', label: 'English', lang: 'en' }], LANG, (v) => { if (v !== LANG) { save(); switchLang(); } });
+    const theme = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
+    seg('theme', [{ id: 'light', label: T.light }, { id: 'dark', label: T.dark }], theme, (v) => { document.documentElement.dataset.theme = v; draw(); });
+    seg('width', [...WIDTHS.map((w) => ({ id: w.id, label: w.id })), ...(st.compare ? [] : [{ id: 'all', label: T.all }])], st.width === 'all' && st.compare ? '1440' : st.width, (v) => { st.width = v; draw(); });
+    document.getElementById('compare').checked = st.compare;
+    const s = page().states.find((x) => x.id === st.state);
+    const notes = [];
+    if (st.compare) notes.push(T.compareNote);
+    if (page().id === 'email') notes.push(T.email);
+    if (s.o === false && (st.compare || st.design === 'orig')) notes.push(T.notInOriginal);
+    document.getElementById('note').textContent = notes.join(' ');
+    const stage = document.getElementById('stage'); stage.textContent = '';
+    const list = frames();
+    const avail = Math.max(320, stage.clientWidth - 40 - 24 * (list.length - 1));
+    const total = list.reduce((a, f) => a + +f.w.id, 0);
+    const scale = Math.min(1, avail / total);
+    for (const f of list) {
+      const box = document.createElement('section'); box.className = 'lab-frame';
+      const url = src(f.d.id, f.w.id);
+      const cap = document.createElement('div'); cap.className = 'lab-cap';
+      const b = document.createElement('b'); b.textContent = f.d.label;
+      const sp = document.createElement('span'); sp.textContent = f.w.id + ' px'; sp.dir = 'ltr';
+      const a = document.createElement('a'); a.className = 'lab-open'; a.href = url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = T.open;
+      cap.append(b, sp, a);
+      const wrap = document.createElement('div'); wrap.className = 'lab-box';
+      wrap.style.width = Math.round(+f.w.id * scale) + 'px'; wrap.style.height = Math.round(f.w.h * scale) + 'px';
+      const ifr = document.createElement('iframe'); ifr.src = url; ifr.width = f.w.id; ifr.height = f.w.h; ifr.loading = 'lazy';
+      ifr.title = page().label + ' — ' + f.d.label + ' — ' + f.w.id + ' px';
+      ifr.style.transform = 'scale(' + scale + ')';
+      wrap.appendChild(ifr); box.append(cap, wrap); stage.appendChild(box);
+    }
+    save();
+  }
+  document.getElementById('page').addEventListener('change', (e) => { st.page = e.target.value; st.state = 'default'; draw(); });
+  document.getElementById('state').addEventListener('change', (e) => { st.state = e.target.value; draw(); });
+  document.getElementById('compare').addEventListener('change', (e) => { st.compare = e.target.checked; if (st.compare && st.width === 'all') st.width = '1440'; draw(); });
+  let t; addEventListener('resize', () => { clearTimeout(t); t = setTimeout(draw, 200); });
+  draw();
+})();
+</script>
+</body>
+</html>
