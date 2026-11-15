@@ -9,8 +9,11 @@
   const { DirectionProvider, Field, Input, InputAction, Button, EyeIcon, EyeOffIcon, LogInIcon, LogOutIcon, CheckIcon, CircleCheckIcon, CircleAlertIcon, TriangleAlertIcon, InfoIcon, LanguagesIcon, MoonIcon, SunIcon, ArrowStartIcon } = DS;
 
   // ── What each design decides beyond its stylesheet ──
+  // `polish` is Slate's round after the owner chose it (decisions/auth.md › Slate's polish round): the
+  // drawn Strip with Gaza City's inset, the mark on the phone, the one-line password conditions, the
+  // form's offline words on forgot password, and the forced change's panel without its words.
   const AX_DESIGNS = {
-    slate: { ownerNote: 'bottom', wayBackTop: false },
+    slate: { ownerNote: 'foot', wayBackTop: false, polish: true },
     coast: { ownerNote: 'top', wayBackTop: true },
     dots: { ownerNote: 'top', wayBackTop: false },
   };
@@ -129,13 +132,33 @@
     errorText: tr('المشكلة عندنا، لا عندك. حاول مرة أخرى بعد قليل.', 'The problem is on our side, not yours. Try again in a moment.'),
     retry: tr('إعادة المحاولة', 'Try again'),
     loading: tr('جارٍ التحميل', 'Loading'),
+    // NEW: the one-line password conditions (Slate).
+    passRule: tr('8 أحرف على الأقل، فيها حرف ورقم', 'At least 8 characters, with a letter and a number'),
+    passGood: tr('كلمة المرور مناسبة', 'Good password'),
+    passTooLong: tr('طويلة جدًا — اختصرها', 'Too long — shorten it'),
   };
+  // What a new password still lacks, as one sentence: the letter and the digit first, then the length.
+  function axPassMissing(v) {
+    const needLetter = !/\p{L}/u.test(v), needDigit = !/\p{N}/u.test(v), short = Math.max(0, 8 - v.length);
+    if (LANG === 'en') {
+      const kinds = [needLetter && 'a letter', needDigit && 'a number'].filter(Boolean);
+      const more = short ? (short === 1 ? '1 more character' : short + ' more characters') + ' to reach 8' : '';
+      if (!kinds.length) return 'Needs ' + more;
+      return 'Needs ' + (more ? kinds.join(', ') + ' and ' + more : kinds.join(' and '));
+    }
+    const kinds = needLetter && needDigit ? 'حرف ورقم' : needLetter ? 'حرف' : needDigit ? 'رقم' : '';
+    const alone = short === 1 ? 'حرف واحد' : short === 2 ? 'حرفان' : short + ' أحرف';
+    const extra = short === 1 ? 'حرف آخر' : short === 2 ? 'حرفان آخران' : short + ' أحرف أخرى';
+    if (!kinds) return 'ينقصها ' + alone + ' لتصل إلى 8';
+    if (!short) return 'ينقصها ' + kinds;
+    return 'ينقصها ' + kinds + '، و' + extra + ' لتصل إلى 8';
+  }
   // The rules production holds (packages/shared › users › password): any letter, Arabic included (\p{L}).
   const AX_RULES = [
     { id: 'len', label: tr('8 أحرف على الأقل', 'At least 8 characters'), test: (v) => v.length >= 8 },
     // NEW words: the rule accepts any letter, and now says so (critique 11).
     { id: 'letter', label: tr('حرف واحد على الأقل، بأي لغة', 'At least one letter, in any language'), test: (v) => /\p{L}/u.test(v) },
-    { id: 'digit', label: tr('رقم واحد على الأقل', 'At least one number'), test: (v) => /[0-9٠-٩]/.test(v) },
+    { id: 'digit', label: tr('رقم واحد على الأقل', 'At least one number'), test: (v) => /\p{N}/u.test(v) },
     { id: 'bytes', label: tr('طويلة جدًا — اختصرها', 'Too long — shorten it'), test: (v) => new TextEncoder().encode(v).length <= 72, onlyBroken: true },
   ];
   const axPasswordOk = (v) => AX_RULES.every((r) => r.test(v));
@@ -209,6 +232,59 @@
     );
   }
 
+  // Slate's Strip (its polish round): the land quiet, the coast drawn finer and brighter than the land's
+  // border, the spaces as dots of a size in screen pixels. Nine of them sit within 2 km in Gaza City,
+  // closer than a dot is wide at this scale, so a circle over the sea shows that city four times larger,
+  // tied to it by a line: the nine read as nine. Measured once it is laid out, and again on a resize.
+  const AX_CITY = AX_DOTS.slice(0, 9);
+  const AX_CX = AX_CITY.reduce((a, d) => a + d.xy[0], 0) / 9, AX_CY = AX_CITY.reduce((a, d) => a + d.xy[1], 0) / 9;
+  // The circle's view is centred a little west of the city, so its coast runs through it.
+  const AX_INSET = { x: 70, y: 112, r: 64, m: 4, vx: 192, vy: AX_CY };
+  function AxSlateStrip({ align }) {
+    const ref = React.useRef(null);
+    const [k, setK] = React.useState(0);
+    const uid = 'ax' + React.useId().replace(/[^a-zA-Z0-9_-]/g, '');
+    const vb = [-12, -12, AX_W + 24, AX_H + 24];
+    React.useLayoutEffect(() => {
+      const el = ref.current;
+      if (!el) return undefined;
+      const measure = () => { const r = el.getBoundingClientRect(); if (r.width && r.height) setK(Math.min(r.width / vb[2], r.height / vb[3])); };
+      measure();
+      const ro = new ResizeObserver(measure);
+      ro.observe(el);
+      return () => ro.disconnect();
+    }, []);
+    const u = (pxs) => (k ? pxs / k : pxs / 2);
+    const I = AX_INSET;
+    const inI = (xy) => [I.x + (xy[0] - I.vx) * I.m, I.y + (xy[1] - I.vy) * I.m];
+    const ringR = 14;
+    const dx = AX_CX - I.x, dy = AX_CY - I.y, len = Math.hypot(dx, dy);
+    const lead = [I.x + (dx / len) * I.r, I.y + (dy / len) * I.r, AX_CX - (dx / len) * ringR, AX_CY - (dy / len) * ringR];
+    const others = AX_DOTS.slice(9);
+    return (
+      <svg ref={ref} className="ax-strip ax-strip--drawn" viewBox={vb.join(' ')} preserveAspectRatio={align} role="img" aria-labelledby={uid + 't ' + uid + 'd'} focusable="false">
+        <title id={uid + 't'}>{W.stripName}</title>
+        <desc id={uid + 'd'}>{W.stripDesc}</desc>
+        <defs><clipPath id={uid + 'c'}><circle cx={I.x} cy={I.y} r={I.r} /></clipPath></defs>
+        <path d={AX_SHAPE} className="ax-strip-land" vectorEffect="non-scaling-stroke" />
+        <path d={axCoastD(0)} className="ax-strip-coast" vectorEffect="non-scaling-stroke" />
+        <circle cx={AX_CX} cy={AX_CY} r={ringR} className="ax-strip-ring" vectorEffect="non-scaling-stroke" />
+        <line x1={lead[0]} y1={lead[1]} x2={lead[2]} y2={lead[3]} className="ax-strip-lead" vectorEffect="non-scaling-stroke" />
+        {AX_CITY.map((d) => <circle key={d.id} cx={d.xy[0]} cy={d.xy[1]} r={u(2)} className="ax-strip-dot ax-strip-dot--far" />)}
+        {others.map((d) => <circle key={d.id} cx={d.xy[0]} cy={d.xy[1]} r={u(4.5)} className="ax-strip-dot" style={{ strokeWidth: u(1.5) }} />)}
+        <circle cx={I.x} cy={I.y} r={I.r} className="ax-strip-inset" vectorEffect="non-scaling-stroke" />
+        <g clipPath={`url(#${uid}c)`}>
+          <g transform={`translate(${I.x} ${I.y}) scale(${I.m}) translate(${-I.vx} ${-I.vy})`}>
+            <path d={AX_SHAPE} className="ax-strip-land ax-strip-land--inset" vectorEffect="non-scaling-stroke" />
+            <path d={axCoastD(0)} className="ax-strip-coast" vectorEffect="non-scaling-stroke" />
+          </g>
+        </g>
+        <circle cx={I.x} cy={I.y} r={I.r} className="ax-strip-inset-edge" vectorEffect="non-scaling-stroke" />
+        {AX_CITY.map((d) => { const p = inI(d.xy); return <circle key={d.id} cx={p[0]} cy={p[1]} r={u(4.5)} className="ax-strip-dot" style={{ strokeWidth: u(1.5) }} />; })}
+      </svg>
+    );
+  }
+
   // ── The frame: the form's column (start) and the ink panel (end, from 1280 px) ──
   function AxTools({ theme, setTheme, signOutButton }) {
     return (
@@ -241,6 +317,7 @@
               )}
               <header className="ax-top">
                 <AxLogo link={linkHome} />
+                {AX_DESIGNS[design].polish && <AxStrip kind="solid" decorative className="ax-mark-strip" r={26} />}
                 {AX_DESIGNS[design].wayBackTop && wayBack && <div className="ax-top-back">{wayBack}</div>}
                 <AxTools theme={theme} setTheme={setTheme} signOutButton={signOutButton} />
               </header>
@@ -251,12 +328,14 @@
           </div>
           <aside className="ax-panel" aria-label={W.brand}>
             <AxLogo onInk link={linkHome} />
-            <div className="ax-panel-copy">
-              <p className="ax-panel-title">{W.panelTitle}</p>
-              <p className="ax-panel-line">{W.panelLine}</p>
-            </div>
+            {!(AX_DESIGNS[design].polish && page === 'change') && (
+              <div className="ax-panel-copy">
+                <p className="ax-panel-title">{W.panelTitle}</p>
+                <p className="ax-panel-line">{W.panelLine}</p>
+              </div>
+            )}
             <div className="ax-panel-art">
-              {design === 'slate' && <AxStrip kind="solid" align={align} r={3} />}
+              {design === 'slate' && <AxSlateStrip align={align} />}
               {design === 'coast' && <AxStrip kind="line" viewBox="96 -24 220 250" align={align} r={2} motion />}
               {design === 'dots' && <AxStrip kind="grid" align={align} r={3} grid={4.6} grain={0.24} motion />}
             </div>
@@ -342,23 +421,39 @@
     );
   }
 
-  function AxPassword({ label, value, onChange, error, disabled, autoComplete, conditions, submitted }) {
+  // One line under a new password (Slate): the rule before typing, what is missing while typing, a
+  // tick once it is good; polite to assistive technology, and the field's description.
+  function AxPassLine({ value, id }) {
+    const tooLong = new TextEncoder().encode(value).length > 72;
+    const good = !tooLong && axPasswordOk(value);
+    const state = !value ? 'is-open' : tooLong ? 'is-bad' : good ? 'is-met' : 'is-short';
+    const words = !value ? W.passRule : tooLong ? W.passTooLong : good ? W.passGood : axPassMissing(value);
+    return (
+      <p id={id} className={['ax-passline', state].join(' ')} aria-live="polite">
+        {good && <span className="ax-passline-mark" aria-hidden="true"><CheckIcon /></span>}
+        {tooLong && <span className="ax-passline-mark" aria-hidden="true"><CircleAlertIcon /></span>}
+        <span>{words}</span>
+      </p>
+    );
+  }
+  function AxPassword({ label, value, onChange, error, disabled, autoComplete, conditions, submitted, line }) {
     const [show, setShow] = React.useState(false);
     const rulesId = ('ax' + React.useId().replace(/[^a-zA-Z0-9_-]/g, '')) + 'r';
     return (
       <div className="ax-pass">
-        <Field label={label} error={error}>
+        <Field label={label} error={error} className="ax-field">
           <Input type={show ? 'text' : 'password'} dir="ltr" autoComplete={autoComplete} value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)} aria-describedby={conditions ? rulesId : undefined}
             action={<InputAction label={show ? W.hide : W.show} icon={show ? <EyeOffIcon /> : <EyeIcon />} onClick={() => setShow(!show)} />} />
         </Field>
-        {conditions && <AxConditions value={value} submitted={submitted || !!error} id={rulesId} />}
+        {conditions && line && <AxPassLine value={value} id={rulesId} />}
+        {conditions && !line && <AxConditions value={value} submitted={submitted || !!error} id={rulesId} />}
       </div>
     );
   }
 
   function AxEmail({ value, onChange, error, disabled, inputRef }) {
     return (
-      <Field label={W.email} error={error}>
+      <Field label={W.email} error={error} className="ax-field">
         <Input ref={inputRef} type="email" dir="ltr" autoComplete="email" placeholder="name@example.com" value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)} />
       </Field>
     );
@@ -413,7 +508,7 @@
               <AxPassword label={W.password} value={password} onChange={setPassword} error={errors.password} autoComplete="current-password" />
               <a className="ax-link ax-forgot" href={withNext('Forgot password.html')}>{W.signIn.forgot}</a>
             </div>
-            <Button type="submit" className="w-full ax-submit" loading={loading} disabled={left > 0}><LogInIcon aria-hidden="true" />{W.signIn.submit}</Button>
+            <Button type="submit" className="w-full ax-submit" loading={loading} disabled={left > 0}>{!AX_DESIGNS[design].polish && <LogInIcon aria-hidden="true" />}{W.signIn.submit}</Button>
           </form>
         </div>
         <div className="ax-foot">
@@ -480,19 +575,19 @@
           <form className="ax-fields" noValidate onSubmit={submit} aria-busy={loading}>
             {offline && <AxNote tone="offline" title={W.offlineTitle} action={<Button type="button" variant="outline" size="sm" onClick={submit}>{W.retry}</Button>}>{W.offlineText}</AxNote>}
             {left > 0 && <AxNote tone="warning">{W.retryIn(mmss(left))}</AxNote>}
-            <Field label={W.name} error={errors.name}>
+            <Field label={W.name} error={errors.name} className="ax-field">
               <Input autoComplete="name" value={v.name} onChange={(e) => set('name')(e.target.value)} />
             </Field>
             <div className="ax-email-row">
               <AxEmail value={v.email} onChange={set('email')} error={errors.email} />
               {taken && <a className="ax-link ax-instead" href={withNext('Sign in.html')}>{W.register.signInInstead}</a>}
             </div>
-            <AxPassword label={W.password} value={v.password} onChange={set('password')} error={errors.password} autoComplete="new-password" conditions submitted={submitted} />
+            <AxPassword label={W.password} value={v.password} onChange={set('password')} error={errors.password} autoComplete="new-password" conditions submitted={submitted} line={AX_DESIGNS[design].polish} />
             <Button type="submit" className="w-full ax-submit" loading={loading} disabled={left > 0}>{W.register.submit}</Button>
           </form>
         </div>
-        {at === 'bottom' && <div className="ax-owner-bottom">{owner}</div>}
         <div className="ax-foot">
+          {at === 'foot' && owner}
           <p className="ax-foot-line">{W.register.have} <a className="ax-link" href={withNext('Sign in.html')}>{W.register.signIn}</a></p>
           <p className="ax-foot-small">{W.register.privacyRead} <a className="ax-link" href="Privacy.html">{W.register.privacyLink}</a></p>
           <div className="ax-foot-back"><AxWayBack /></div>
@@ -518,7 +613,6 @@
     const [left, setLeft] = useCountdown(step === 'sent' ? 59 : 0);
     const emailRef = React.useRef(null);
     const focusNext = React.useRef(false);
-    React.useEffect(() => { if (st === 'loading') return; }, []);
     React.useEffect(() => { if (step === 'request' && focusNext.current) { focusNext.current = false; if (emailRef.current) emailRef.current.focus(); } }, [step]);
     const again = () => { focusNext.current = true; setStep('request'); setEmail(''); setError(); };
     const retryRead = () => { setReadFail(null); setReading(true); setTimeout(() => setReading(false), ACTION_MS); };
@@ -539,7 +633,7 @@
           {step === 'request' && (
             <form className="ax-fields" noValidate onSubmit={submit} aria-busy={loading || reading}>
               {reading && <AxBusyBar />}
-              {readFail === 'offline' && <AxNote tone="offline" title={W.noNetTitle} action={<Button type="button" variant="outline" size="sm" onClick={retryRead}>{W.retry}</Button>}>{W.noNetText}</AxNote>}
+              {readFail === 'offline' && <AxNote tone="offline" title={AX_DESIGNS[design].polish ? W.offlineTitle : W.noNetTitle} action={<Button type="button" variant="outline" size="sm" onClick={retryRead}>{W.retry}</Button>}>{AX_DESIGNS[design].polish ? W.offlineText : W.noNetText}</AxNote>}
               {readFail === 'error' && <AxNote tone="error" title={W.errorTitle} action={<Button type="button" variant="outline" size="sm" onClick={retryRead}>{W.retry}</Button>}>{W.errorText}</AxNote>}
               {limit > 0 && <AxNote tone="warning">{W.retryIn(mmss(limit))}</AxNote>}
               <AxEmail value={email} onChange={setEmail} error={error} inputRef={emailRef} />
@@ -597,7 +691,7 @@
       head = <AxHead design={design} title={W.reset.title} lede={W.reset.forAccount(AX_MASKED)} />;
       body = (
         <form className="ax-fields" noValidate onSubmit={submit} aria-busy={loading}>
-          <AxPassword label={W.reset.newPassword} value={pw} onChange={setPw} error={error} autoComplete="new-password" conditions submitted={submitted} />
+          <AxPassword label={W.reset.newPassword} value={pw} onChange={setPw} error={error} autoComplete="new-password" conditions submitted={submitted} line={AX_DESIGNS[design].polish} />
           <Button type="submit" className="w-full ax-submit" loading={loading}>{W.reset.submit}</Button>
         </form>
       );
@@ -628,7 +722,7 @@
       body = <div className="ax-actions"><Button className="w-full ax-submit" asChild><a href="Forgot password.html">{W.reset.requestNew}</a></Button></div>;
     } else {
       head = <AxHead design={design} title={W.reset.doneTitle} lede={W.reset.doneLede} mark={<span className="ax-mark ax-mark--done" aria-hidden="true"><CircleCheckIcon /></span>} />;
-      body = <div className="ax-actions"><Button className="w-full ax-submit" asChild><a href="Sign in.html"><LogInIcon aria-hidden="true" />{W.reset.signIn}</a></Button></div>;
+      body = <div className="ax-actions"><Button className="w-full ax-submit" asChild><a href="Sign in.html">{!AX_DESIGNS[design].polish && <LogInIcon aria-hidden="true" />}{W.reset.signIn}</a></Button></div>;
     }
     return (
       <AxFrame design={design} page="reset" wayBack={view !== 'success' ? back : null}>
@@ -661,7 +755,7 @@
         <div className="ax-body">
           <form className="ax-fields" noValidate onSubmit={submit} aria-busy={loading}>
             {offline && <AxNote tone="offline" title={W.offlineTitle} action={<Button type="button" variant="outline" size="sm" onClick={submit}>{W.retry}</Button>}>{W.offlineText}</AxNote>}
-            <AxPassword label={W.reset.newPassword} value={pw} onChange={setPw} error={error} autoComplete="new-password" conditions submitted={submitted} />
+            <AxPassword label={W.reset.newPassword} value={pw} onChange={setPw} error={error} autoComplete="new-password" conditions submitted={submitted} line={AX_DESIGNS[design].polish} />
             <Button type="submit" className="w-full ax-submit" loading={loading}>{W.change.submit}</Button>
           </form>
         </div>

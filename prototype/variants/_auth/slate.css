@@ -1,33 +1,97 @@
-/* «اللوح» Slate — the closest to A1 as written (decisions/auth.md). Half and half from 1280: the form
-   quiet on the page, the ink slab beside it with the Strip drawn whole, solid, full height, its spaces
-   in the berry. The design system's own type scale (heading-1 for the h1); states as the system's
+/* «اللوح» Slate — the owner's choice (2026-11-15), after its polish round (decisions/auth.md). Half and
+   half from 1280: the form quiet on the page, beside it the ink slab with the Strip drawn whole — a quiet
+   land, its coast drawn finer and brighter, the spaces in the berry, Gaza City's nine in a circle over the
+   sea. One 8 px rhythm; the form's column one width with Google's real button; states as the system's
    alerts; no motion. */
 
-.ax--slate { --ax-form-w: 400px; --ax-cols: 1fr 1fr; --ax-offset-md: 72px; --ax-offset-lg: 128px; --ax-h1: 28px; --ax-h1-md: 30px; --ax-lede: 16px; --ax-gap: 28px; }
+.ax--slate { --ax-form-w: 400px; --ax-cols: 1fr 1fr; --ax-offset-md: 72px; --ax-offset-lg: 128px; --ax-h1: 28px; --ax-h1-md: 30px; --ax-lede: 16px; --ax-gap: 32px; --control-height: 48px; }
+/* The column's heights: 48 on the phone; from 768, the system's 40 with a mouse and 44 on touch — the
+   same 40 as Google's own `large` button, so the column reads as one. */
+@media (min-width: 768px) { .ax--slate { --control-height: 40px; } }
+@media (min-width: 768px) and (pointer: coarse) { .ax--slate { --control-height: 44px; } }
 
-/* States: the system's alerts — a tinted box with its edge. */
-.ax--slate .ax-note { padding: 12px 14px; border: 1px solid; border-radius: 8px; }
-.ax--slate .ax-note--error, .ax--slate .ax-note--offline { background: var(--destructive-subtle); border-color: color-mix(in oklab, var(--destructive) 35%, transparent); color: var(--destructive-subtle-foreground); }
-.ax--slate .ax-note--warning { background: var(--warning-subtle); border-color: color-mix(in oklab, var(--warning) 45%, transparent); color: var(--warning-subtle-foreground); }
-.ax--slate .ax-note--info { background: var(--info-subtle); border-color: color-mix(in oklab, var(--info) 35%, transparent); color: var(--info-subtle-foreground); }
+/* The rhythm, on 8 px: label 8 field, field 8 its line, 24 between fields, 32 to the button and between
+   the head, the body and the foot. */
+.ax--slate .ax-head-text { gap: 8px; }
+.ax--slate .ax-body { gap: 24px; }
+.ax--slate .ax-fields { gap: 24px; }
+.ax--slate .ax-field { gap: 8px; }
+.ax--slate .ax-pass, .ax--slate .ax-email-row { gap: 8px; }
+.ax--slate .ax-pass-row { gap: 0; }
+.ax--slate .ax-google-block { gap: 16px; }
+.ax--slate .ax-submit { margin-block-start: 8px; }
+.ax--slate .ax-sent, .ax--slate .ax-actions { gap: 16px; }
+
+/* Google's row at the box Google's button really has (production: `size: large`, at most 400 wide):
+   40 px tall, its own 4 px corners, as wide as the column up to 400. */
+.ax--slate .ax-google { height: 40px; max-width: 400px; border-radius: 4px; }
+
+/* Standalone links take a 44 px target (F10). */
+.ax--slate .ax-forgot, .ax--slate .ax-instead { display: inline-flex; min-height: 44px; align-items: center; }
+
+/* The one-line password conditions: the rule, then what is missing, then a berry tick. */
+.ax--slate .ax-passline { margin: 0; display: flex; min-height: 21px; align-items: center; gap: 6px; font-size: 13px; line-height: 1.6; color: var(--muted-foreground); }
+.ax--slate .ax-passline.is-short { color: var(--foreground); }
+.ax--slate .ax-passline.is-met { color: var(--foreground); font-weight: 500; }
+.ax--slate .ax-passline.is-bad { color: var(--destructive); }
+.ax--slate .ax-passline-mark { display: inline-flex; flex: none; }
+.ax--slate .ax-passline-mark svg { width: 16px; height: 16px; }
+.ax--slate .ax-passline.is-met .ax-passline-mark { color: var(--spark); }
+
+/* States: the system's alerts — a tinted box with its edge, calm. */
+.ax--slate .ax-note { padding: 12px 16px; border: 1px solid; border-radius: 8px; }
+.ax--slate .ax-note--error, .ax--slate .ax-note--offline { background: var(--destructive-subtle); border-color: color-mix(in oklab, var(--destructive) 30%, transparent); color: var(--destructive-subtle-foreground); }
+.ax--slate .ax-note--warning { background: var(--warning-subtle); border-color: color-mix(in oklab, var(--warning) 40%, transparent); color: var(--warning-subtle-foreground); }
+.ax--slate .ax-note--info { background: var(--info-subtle); border-color: color-mix(in oklab, var(--info) 30%, transparent); color: var(--info-subtle-foreground); }
+.ax--slate .ax-note-action { margin-block-start: 8px; }
 
 /* The address the link went to: a berry dot beside it. */
 .ax--slate .ax-sentto-dot { display: block; width: 8px; height: 8px; border-radius: 999px; background: var(--spark); }
 
-.ax--slate .ax-foot { padding-block-start: 20px; border-block-start: 1px solid var(--border); }
-.ax--slate .ax-owner-bottom { padding: 14px 16px; border-radius: 8px; background: var(--muted); }
-.ax--slate .ax-owner-bottom .ax-owner { color: var(--foreground); }
+/* The foot: one quiet group, centred on the column (the owner's word), the owners' note in it. */
+.ax--slate .ax-foot { align-items: center; gap: 8px; padding-block-start: 24px; border-block-start: 1px solid var(--border); text-align: center; }
+.ax--slate .ax-foot .ax-owner { max-width: 34ch; margin-block-end: 8px; font-size: 13px; line-height: 1.7; text-wrap: balance; }
+
+/* The phone's and tablet's touch of the brand: the Strip as a small mark beside the logo, clear of its
+   8 px space, with the spaces in the berry. */
+.ax--slate .ax-mark-strip { display: block; flex: none; width: 27px; height: 34px; margin-inline-start: 4px; }
+.ax--slate .ax-mark-strip .ax-strip-land { fill: var(--neutral-400); stroke: none; }
+[data-theme=dark] .ax--slate .ax-mark-strip .ax-strip-land { fill: var(--neutral-600); }
+.ax--slate .ax-mark-strip .ax-strip-dot { fill: var(--spark); stroke: var(--background); stroke-width: 1px; }
+
+/* The panel in dark: as deep as the page, set apart by its hairline and its drawing, never a grey card. */
+[data-theme=dark] .ax--slate { --ax-ink: var(--neutral-950); }
+
+/* The drawing: a quiet land, its coast finer and brighter than its border, Gaza City's circle. */
+.ax--slate .ax-strip-land { fill: color-mix(in oklab, var(--neutral-800) 55%, var(--neutral-900)); stroke: var(--neutral-700); stroke-width: 1px; }
+[data-theme=dark] .ax--slate .ax-strip-land { fill: var(--neutral-900); stroke: var(--neutral-800); }
+.ax--slate .ax-strip--drawn { overflow: hidden; }
+.ax--slate .ax-strip-land--inset { stroke: none; }
+.ax--slate .ax-strip-coast { fill: none; stroke: var(--neutral-300); stroke-width: 1.25px; stroke-linecap: round; }
+.ax--slate .ax-strip-ring { fill: none; stroke: var(--neutral-400); stroke-width: 1px; }
+.ax--slate .ax-strip-lead { stroke: var(--neutral-500); stroke-width: 1px; }
+.ax--slate .ax-strip-inset { fill: var(--ax-ink); stroke: none; }
+.ax--slate .ax-strip-inset-edge { fill: none; stroke: var(--neutral-500); stroke-width: 1px; }
+.ax--slate .ax-strip-dot { fill: var(--ax-spark-on-ink); stroke: var(--ax-ink); }
+.ax--slate .ax-strip-dot--far { stroke: none; opacity: .9; }
 
 @media (min-width: 1280px) {
-  .ax--slate .ax-panel { padding: 48px 56px 44px; gap: 0; }
-  .ax--slate .ax-panel-copy { max-width: 420px; }
+  .ax--slate .ax-mark-strip { display: none; }
+  .ax--slate .ax-panel { padding: 48px 56px 44px; }
+  .ax--slate .ax-panel .ax-logo:focus-visible { outline-color: var(--neutral-50); }
   .ax--slate .ax-panel-title { font-size: 40px; line-height: 1.35; }
   html[lang=en] .ax--slate .ax-panel-title { line-height: 1.15; letter-spacing: -0.01em; }
   .ax--slate .ax-panel-line { font-size: 16px; line-height: 1.75; }
-  /* The text sits where the land isn't: the Strip runs north-east to south-west, so its empty
-     corners are the top-left and the bottom-right — the start's bottom in Arabic, its top in English. */
-  html[dir=rtl] .ax--slate .ax-panel-copy { margin-block-start: auto; margin-block-end: 28px; }
-  html[dir=ltr] .ax--slate .ax-panel-copy { margin-block-start: 56px; margin-block-end: auto; max-width: 340px; }
-  .ax--slate .ax-panel-art { inset: 104px 48px 84px 48px; }
-  .ax--slate .ax-strip-land { fill: var(--neutral-800); stroke: var(--neutral-600); stroke-width: 1px; }
+  /* The words sit where the land isn't: the Strip runs north-east to south-west and Gaza City's circle
+     takes the sea at the top, so the copy and the caption hold the bottom-right corner in both languages
+     (the start in Arabic, the end in English). */
+  .ax--slate .ax-panel-copy, .ax--slate .ax-panel-cap { width: min(360px, 52%); }
+  .ax--slate .ax-panel-copy { margin-block-start: auto; margin-block-end: 24px; }
+  .ax--slate .ax-panel-art + .ax-panel-cap { margin-block-start: auto; }
+  html[dir=ltr] .ax--slate .ax-panel-copy, html[dir=ltr] .ax--slate .ax-panel-cap { margin-inline-start: auto; }
+  .ax--slate .ax-panel-copy ~ .ax-panel-art + .ax-panel-cap { margin-block-start: 0; }
+  .ax--slate .ax-panel-art { inset: 104px 40px 56px 40px; }
+}
+@media (min-width: 1440px) {
+  .ax--slate .ax-strip-coast { stroke-width: 1.5px; }
 }
