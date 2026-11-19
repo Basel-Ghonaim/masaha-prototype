@@ -20,6 +20,7 @@
     // Round 4 (Sign in only, 2026-11-19, decisions/auth.md): Slate's form (`slateForm`: the frame carries
     // `ax--slate` too), each with a panel or a frame of its own.
     atlas: { ownerNote: 'top', wayBackTop: false, polish: true, slateForm: true, panel: 'atlas' }, // AxAtlasPanel
+    threshold: { ownerNote: 'top', wayBackTop: false, polish: true, slateForm: true, frame: 'threshold' }, // AxThreshold
   };
 
   // ── Words. The product's own are masaha's catalogue (apps/web/src/shared/copy), as they are;
@@ -464,6 +465,43 @@
     );
   }
 
+  // ── Threshold «العتبة» (round 4, Sign in only): an ink masthead and two ways in. The masthead, at every width,
+  //    holds the logo, the tools and the page's title; under it, on one grid, the sign-in form — the current
+  //    path, marked by the spark's edge at the masthead's foot, the system's selected mark — and the way for a
+  //    new account and for space owners, in the catalogue's words. No panel, no art. ──
+  function AxThreshold({ design, head, body }) {
+    const [theme, setTheme] = useTheme();
+    return (
+      <div className={['ax', 'ax--' + design, 'ax--slate', 'ax-p--signin'].join(' ')}>
+        <SkipLink />
+        <div className="ax-th-band">
+          <header className="ax-top ax-th-wrap">
+            <AxLogo onInk />
+            <AxTools theme={theme} setTheme={setTheme} />
+          </header>
+        </div>
+        <main id="main" className="ax-th-main" tabIndex={-1}>
+          <div className="ax-th-band ax-th-band--head">
+            <div className="ax-th-wrap ax-th-headwrap">
+              {head}
+              <span className="ax-th-current" aria-hidden="true"></span>
+            </div>
+          </div>
+          <div className="ax-th-wrap ax-th-grid">
+            <div className="ax-form ax-th-signin">{body}</div>
+            <section className="ax-th-new" aria-labelledby="ax-th-new">
+              <h2 id="ax-th-new" className="ax-th-h2">{W.signIn.noAccount}</h2>
+              <p className="ax-th-text">{W.register.lede}</p>
+              <Button variant="outline" className="w-full ax-th-create" asChild><a href={withNext('Register.html')}>{W.signIn.create}</a></Button>
+              <p className="ax-th-owner">{W.register.ownerNote} <a className="ax-link" href="About.html#owners">{W.register.contact}</a></p>
+            </section>
+          </div>
+        </main>
+        <PageToaster />
+      </div>
+    );
+  }
+
   // The page's head: its h1 and line.
   function AxHead({ title, lede, mark }) {
     return (
@@ -609,9 +647,8 @@
       setLoading(true);
       setTimeout(() => { setLoading(false); if (email.startsWith('wrong')) setFailure('creds'); else if (email.startsWith('offline')) setFailure('offline'); else finishAuth(withIntent(W.signIn.welcome)); }, 1200);
     };
-    return (
-      <AxFrame design={design} page="signin" wayBack={<AxWayBack />}>
-        <AxHead design={design} title={W.signIn.title} lede={W.signIn.lede} />
+    const head = <AxHead design={design} title={W.signIn.title} lede={W.signIn.lede} />;
+    const body = (
         <div className="ax-body">
           {st === 'idle' && <AxNote tone="info">{W.signIn.idle}</AxNote>}
           <AxGoogle google={google} failed={gFailed} />
@@ -627,9 +664,18 @@
             <Button type="submit" className="w-full ax-submit" loading={loading} disabled={left > 0}>{!AX_DESIGNS[design].polish && <LogInIcon aria-hidden="true" />}{W.signIn.submit}</Button>
           </form>
         </div>
+    );
+    const foot = (
         <div className="ax-foot">
           <p className="ax-foot-line">{W.signIn.noAccount} <a className="ax-link" href={withNext('Register.html')}>{W.signIn.create}</a></p>
         </div>
+    );
+    if (AX_DESIGNS[design].frame === 'threshold') return <AxThreshold design={design} head={head} body={body} />;
+    return (
+      <AxFrame design={design} page="signin" wayBack={<AxWayBack />}>
+        {head}
+        {body}
+        {foot}
       </AxFrame>
     );
   }

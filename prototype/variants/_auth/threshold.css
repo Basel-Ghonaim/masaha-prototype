@@ -1,0 +1,59 @@
+/* «العتبة» Threshold — round 4, Sign in only (2026-11-19, decisions/auth.md). Slate's form (the frame carries
+   `ax--slate` too); this file draws its frame. An ink masthead at every width — the logo, the tools and the page's
+   title at display size — and under it, on one grid, the two ways in: the form, marked as the current path by the
+   spark's edge at the masthead's foot, and the way for a new account and for space owners. No panel, no art: the
+   width goes to the page's two audiences. */
+
+.ax--threshold { --th-col: 400px; }
+
+/* The masthead: the ink in both themes (in dark, Slate's deepest ink with a hairline at its foot). */
+.ax-th-band { background: var(--ax-ink); color: var(--ax-on-ink); }
+.ax--threshold .ax-th-wrap { box-sizing: border-box; width: 100%; max-width: calc(480px + 40px); margin-inline: auto; padding-inline: 20px; }
+.ax--threshold .ax-th-band .ax-top { min-height: 64px; }
+.ax--threshold .ax-th-band .ax-logo:focus-visible,
+.ax--threshold .ax-th-band .ax-tool:focus-visible { outline-color: var(--neutral-50); }
+.ax--threshold .ax-th-band .ax-tool { color: var(--ax-on-ink); }
+.ax--threshold .ax-th-band .ax-tool:hover { background: var(--neutral-800); }
+[data-theme=dark] .ax--threshold .ax-th-band .ax-tool:hover { background: var(--neutral-900); }
+
+.ax-th-main { display: block; outline: none; }
+.ax--threshold .ax-th-headwrap { position: relative; padding-block: 12px 36px; }
+.ax--threshold .ax-h1 { color: var(--ax-on-ink); font-size: 30px; line-height: 1.4; }
+html[lang=en] .ax--threshold .ax-h1 { line-height: 1.2; letter-spacing: -0.01em; }
+.ax--threshold .ax-lede { max-width: 34em; color: var(--ax-on-ink-2); }
+[data-theme=dark] .ax--threshold .ax-th-band--head { border-block-end: 1px solid var(--neutral-800); }
+
+/* The current path: the spark's edge at the masthead's foot, over the form's column (the system's selected mark). */
+.ax-th-current { position: absolute; inset-block-end: 0; inset-inline-start: 20px; width: min(var(--th-col), calc(100% - 40px)); height: 4px; border-radius: 1.5px 1.5px 0 0; background: var(--ax-spark-on-ink); }
+[data-theme=dark] .ax-th-current { inset-block-end: -1px; }
+
+/* The two ways in. */
+.ax--threshold .ax-th-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 40px; padding-block: 32px 56px; }
+.ax--threshold .ax-th-signin { max-width: var(--th-col); margin-inline: 0; }
+.ax-th-new { display: flex; max-width: var(--th-col); flex-direction: column; align-items: flex-start; gap: 8px; padding-block-start: 32px; border-block-start: 1px solid var(--border); }
+.ax-th-h2 { margin: 0; font-size: 20px; line-height: 1.5; font-weight: 600; }
+.ax-th-text { margin: 0; font-size: 15px; line-height: 1.75; color: var(--muted-foreground); text-wrap: pretty; }
+html[lang=en] .ax-th-text { line-height: 1.6; }
+.ax--threshold .ax-th-create { margin-block-start: 16px; height: var(--control-height); }
+.ax-th-owner { margin: 16px 0 0; font-size: 13px; line-height: 1.7; color: var(--muted-foreground); text-wrap: pretty; }
+
+@media (min-width: 768px) {
+  .ax--threshold .ax-th-wrap { max-width: calc(480px + 64px); padding-inline: 32px; }
+  .ax--threshold .ax-th-band .ax-top { min-height: 72px; }
+  .ax--threshold .ax-th-headwrap { padding-block: 24px 48px; }
+  .ax--threshold .ax-h1 { font-size: 40px; line-height: 1.35; }
+  .ax-th-current { inset-inline-start: 32px; width: min(var(--th-col), calc(100% - 64px)); }
+  .ax--threshold .ax-th-grid { padding-block: 48px 64px; }
+}
+
+/* From 1024 the two ways sit side by side on one grid, the form at the start under the spark's edge; a hairline
+   between them. */
+@media (min-width: 1024px) {
+  .ax--threshold .ax-th-wrap { max-width: calc(var(--th-col) + 56px + 1px + 56px + 340px + 64px); }
+  .ax--threshold .ax-th-headwrap { padding-block: 32px 56px; }
+  .ax--threshold .ax-top .ax-logo { display: inline-block; }
+  .ax--threshold .ax-h1 { font-size: 44px; line-height: 1.3; }
+  .ax--threshold .ax-lede { font-size: 17px; }
+  .ax--threshold .ax-th-grid { grid-template-columns: var(--th-col) minmax(0, 1fr); gap: 0; padding-block: 56px 72px; }
+  .ax-th-new { max-width: calc(340px + 57px); margin-inline-start: 56px; padding-block-start: 0; padding-inline-start: 56px; border-block-start: 0; border-inline-start: 1px solid var(--border); }
+}

@@ -179,6 +179,32 @@ because its parts never pointed at each other.*
   count of any kind. In production, the squares and the names would both come from the directory's pins and
   lookups, never from a list written by hand.
 
+### `threshold` — «العتبة» Threshold (Sign in only, 2026-11-19, round 4)
+*No panel and no art. The owner's "half empty" is answered with function: the width goes to the page's two
+audiences, people coming back and people who are new (or who run a space). GOV.UK's sign-in, with its masthead,
+heading and one column, and GitHub's and Amazon's "new here?" block are the references.*
+- **What it changes:**
+  - **An ink masthead at every width,** the full width of the page. It holds:
+    - the logo (the dark one) and the tools, on the ink;
+    - the page's h1 at display size: 44 px from 1024, 40 on the tablet, 30 on the phone;
+    - the lede, in `neutral-300`.
+    In dark, the masthead is Slate's deepest ink, with a hairline at its foot.
+  - **The current path:** a 4 px edge in the berry at the masthead's foot, exactly over the form's column. This is
+    the design system's own selected mark (an edge), marking the form you are on.
+  - **The two ways in,** on one grid under the masthead:
+    - the form at the start, 400 px, as Slate's;
+    - from 1024, beside it and past a hairline, the way for a new account: «ليس لديك حساب؟» as an h2,
+      register's own line, «إنشاء حساب» as an outline button (it keeps `next`), and register's owners' note with
+      «تواصل معنا».
+    Below 1024 that column follows the form, after a hairline.
+  - **The foot line goes:** its words now head the new-account column.
+- **Proposed against masaha's design system:**
+  - An auth page's h1 at `display` (44 / phone 30), on an ink masthead: a new surface, the ink as a page's head.
+  - The selected edge used at the scale of a page, to mark the current path.
+  - Sign-in carrying register's line and the owners' note: words production has, on register.
+- **Kept:** Slate's form, its rhythm and its states. All the words are the catalogue's; this design adds none.
+  There is still no way back, since the logo is the way home (Slate's order).
+
 ### The reset e-mail, in Slate
 Within e-mail limits (tables, inline styles, no SVG, no image, no web font required); the brand is the
 word «مساحة», as production's e-mail has it; production's words and its link printed as text.

@@ -19,6 +19,7 @@ window.MASAHA_VARIANTS = (function () {
     'Sign in': auth.concat([
       { name: 'slate2', ar: 'اللوح ٢', en: 'Slate 2', css: true },
       { name: 'atlas', ar: 'الأطلس', en: 'Atlas', css: true },
+      { name: 'threshold', ar: 'العتبة', en: 'Threshold', css: true },
     ]),
     'Register': auth,
     'Forgot password': auth,
