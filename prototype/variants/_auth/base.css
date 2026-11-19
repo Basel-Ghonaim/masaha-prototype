@@ -1,5 +1,5 @@
-/* The auth designs' common frame (decisions/auth.md): what Slate, Coast and Dots share. Each design's
-   own stylesheet (`<design>.css`) sets the custom properties below and draws its differences.
+/* The auth design's common frame (decisions/auth.md). The design's own stylesheet (`<design>.css`) sets
+   the custom properties below and draws its differences.
    Logical sides only; the ink panel from 1280 px; one fixed top offset per width (no vertical centring).
    Colours are the design system's tokens; the panel is the ink (neutral-900) in both themes. */
 
@@ -59,7 +59,6 @@
 html[lang=en] .ax-h1 { line-height: 1.25; }
 .ax-lede { margin: 0; font-size: var(--ax-lede); line-height: 1.75; color: var(--muted-foreground); text-wrap: pretty; }
 html[lang=en] .ax-lede { line-height: 1.6; }
-.ax-mini { display: none; }
 .ax-mark { display: inline-flex; flex: none; width: 40px; height: 40px; align-items: center; justify-content: center; border-radius: 999px; margin-block-start: 2px; }
 .ax-mark svg { width: 22px; height: 22px; }
 .ax-mark--done { background: var(--success-subtle); color: var(--success); }
@@ -160,16 +159,9 @@ html[dir=rtl] .ax-busy span { animation-name: ax-busy-rtl; }
   .ax-panel-cap { position: relative; z-index: 1; }
 }
 
-/* Motion: the Coast's line draws in, the dots appear from north to south. Off when the reader asks. */
-.ax-draw-on path { stroke-dasharray: 1; animation: ax-draw 1.4s var(--easing-standard, ease) both; }
-.ax-draw-on .ax-strip-echo { animation-delay: .25s; }
-.ax-draw-on .ax-strip-echo--2 { animation-delay: .45s; }
-@keyframes ax-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
-.ax-pop-on .ax-strip-dot { transform-box: fill-box; transform-origin: center; animation: ax-pop .3s var(--easing-standard, ease) both; }
-@keyframes ax-pop { from { opacity: 0; transform: scale(.2); } to { opacity: 1; transform: scale(1); } }
+/* Motion: only the waiting bar moves. Off when the reader asks. */
 @media (prefers-reduced-motion: reduce) {
-  .ax-draw-on path, .ax-pop-on .ax-strip-dot, .ax-busy span { animation: none; }
-  .ax-busy span { width: 100%; opacity: .35; }
+  .ax-busy span { animation: none; width: 100%; opacity: .35; }
 }
 .ax-cond-label { min-width: 0; }
 .ax-foot-line { line-height: 1.7; }

@@ -7,13 +7,12 @@
 // inline script; `css: true` also loads `variants/Sign in/calm.css`. `ar` and `en` label it in the
 // switcher. A page with no entry has no switcher. Each variant is described in
 // `decisions/<page>.md`.
-// The auth pages' three designs (decisions/auth.md): one kit, variants/_auth/, drawn on each page. Built
-// inside a function, so this file adds no top-level name to the pages' one global scope (README).
+// The auth pages' design, Slate (decisions/auth.md): one kit, variants/_auth/, drawn on each page. Coast and
+// Dots were retired by the owner on 2026-11-19. Built inside a function, so this file adds no top-level name
+// to the pages' one global scope (README).
 window.MASAHA_VARIANTS = (function () {
   const auth = [
     { name: 'slate', ar: 'اللوح', en: 'Slate', css: true },
-    { name: 'coast', ar: 'الساحل', en: 'Coast', css: true },
-    { name: 'dots', ar: 'النقاط', en: 'Dots', css: true },
   ];
   return {
     'Sign in': auth,

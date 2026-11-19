@@ -69,7 +69,7 @@ html[dir=rtl] .lab-box iframe{transform-origin:top right}
   const T = {
     home: tr('مساحة — الرئيسية', 'Masaha — home'),
     title: tr('مختبر صفحات الدخول', 'Auth lab'),
-    sub: tr('ثلاثة تصاميم لكل صفحة، بجانب الأصل', 'Three designs of every page, beside the original'),
+    sub: tr('تصميم «اللوح» لكل صفحة، بجانب الأصل', 'The Slate design of every page, beside the original'),
     bar: tr('خيارات العرض', 'View options'),
     design: tr('التصميم', 'Design'), page: tr('الصفحة', 'Page'), state: tr('الحالة', 'State'),
     lang: tr('اللغة', 'Language'), theme: tr('المظهر', 'Theme'), width: tr('العرض', 'Width'),
@@ -78,13 +78,11 @@ html[dir=rtl] .lab-box iframe{transform-origin:top right}
     open: tr('افتح الصفحة كاملة', 'Open the full page'),
     notInOriginal: tr('الأصل لا يرسم هذه الحالة؛ يظهر بحالته الأولى.', 'The original doesn’t draw this state; it shows its first one.'),
     email: tr('الرسالة ثنائية اللغة وفاتحة دائمًا، كما في الإنتاج: اللغة والمظهر لا يغيّرانها.', 'The e-mail is bilingual and always light, as in production: language and theme don’t change it.'),
-    compareNote: tr('مقارنة: الصفحة والحالة نفسها، الأصل والتصاميم الثلاثة بعرض واحد.', 'Comparing: one page and state, the original and the three designs at one width.'),
+    compareNote: tr('مقارنة: الصفحة والحالة نفسها، الأصل وتصاميمه بعرض واحد.', 'Comparing: one page and state, the original and its designs at one width.'),
   };
   const DESIGNS = [
     { id: 'orig', label: tr('الأصل', 'Original') },
     { id: 'slate', label: tr('اللوح', 'Slate') },
-    { id: 'coast', label: tr('الساحل', 'Coast') },
-    { id: 'dots', label: tr('النقاط', 'Dots') },
   ];
   // Each page and its states; `o: false` marks a state the original has no drawing of, and `og` the
   // original's own parameter for it where it has one under another name.
@@ -166,8 +164,8 @@ html[dir=rtl] .lab-box iframe{transform-origin:top right}
     document.getElementById('note').textContent = notes.join(' ');
     const stage = document.getElementById('stage'); stage.textContent = '';
     const list = frames();
-    // Compare at 768 or 1440 lays the four out two by two, so each is read at about half its size; at
-    // 390 the four phones stand in a row.
+    // Compare at 768 or 1440 lays the designs out two by two, so each is read at about half its size;
+    // at 390 the phones stand in a row.
     const grid = st.compare && list[0].w.id !== '390';
     stage.classList.toggle('lab-stage--grid', grid);
     const perRow = grid ? 2 : list.length;
@@ -193,7 +191,7 @@ html[dir=rtl] .lab-box iframe{transform-origin:top right}
   }
   document.getElementById('page').addEventListener('change', (e) => { st.page = e.target.value; st.state = 'default'; draw(); });
   document.getElementById('state').addEventListener('change', (e) => { st.state = e.target.value; draw(); });
-  // Compare opens at 390, where the four designs read side by side.
+  // Compare opens at 390, where the designs read side by side.
   document.getElementById('compare').addEventListener('change', (e) => { st.compare = e.target.checked; if (st.compare) st.width = '390'; draw(); });
   // Only a change of width redraws: a redraw reloads every frame.
   let t, lastW = innerWidth; addEventListener('resize', () => { if (innerWidth === lastW) return; lastW = innerWidth; clearTimeout(t); t = setTimeout(draw, 200); });

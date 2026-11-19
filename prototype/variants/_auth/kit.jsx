@@ -1,5 +1,5 @@
-// The auth pages' three designs — «اللوح» Slate, «الساحل» Coast, «النقاط» Dots — in one kit
-// (decisions/auth.md). Each auth page's variant (`variants/<Page>/<design>.jsx`) is two lines: it loads
+// The auth pages' design «اللوح» Slate in one kit (decisions/auth.md; Coast and Dots retired by the
+// owner on 2026-11-19). Each auth page's variant (`variants/<Page>/<design>.jsx`) is two lines: it loads
 // this file once, compiled by the page's own Babel, and draws its page in its design. The shared
 // modules (masaha/shared.jsx, masaha/auth.jsx) are read, never changed; every name here starts with
 // `Ax` or `ax`, so no page's global is overwritten. The page logic is one; each design is its CSS
@@ -14,8 +14,6 @@
   // form's offline words on forgot password, and the forced change's panel without its words.
   const AX_DESIGNS = {
     slate: { ownerNote: 'top', wayBackTop: false, polish: true },
-    coast: { ownerNote: 'top', wayBackTop: true },
-    dots: { ownerNote: 'top', wayBackTop: false },
   };
 
   // ── Words. The product's own are masaha's catalogue (apps/web/src/shared/copy), as they are;
@@ -189,47 +187,6 @@
     return d;
   }
   const AX_SHAPE = axCoastD(0) + AX_PTS.slice(10).map((p) => ' L' + p.join(' ')).join('') + ' Z';
-  // North to south, for the dots that appear in turn.
-  const AX_DOTS_NS = AX_DOTS.slice().sort((a, b) => a.xy[1] - b.xy[1]);
-
-  // kind: line (Coast) · grid (Dots); Slate draws its own (AxSlateStrip). r is the dot's radius in the drawing's units.
-  function AxStrip({ kind, viewBox, align, r, grid, grain, className, motion, decorative }) {
-    const uid = ('ax' + React.useId().replace(/[^a-zA-Z0-9_-]/g, ''));
-    const vb = viewBox || `-12 -12 ${AX_W + 24} ${AX_H + 24}`;
-    const label = decorative ? { 'aria-hidden': true } : { role: 'img', 'aria-labelledby': uid + 't ' + uid + 'd' };
-    return (
-      <svg className={['ax-strip', 'ax-strip--' + kind, className].filter(Boolean).join(' ')} viewBox={vb} preserveAspectRatio={align || 'xMidYMid meet'} {...label} focusable="false">
-        {!decorative && <title id={uid + 't'}>{W.stripName}</title>}
-        {!decorative && <desc id={uid + 'd'}>{W.stripDesc}</desc>}
-        {kind === 'grid' && (
-          <defs>
-            <pattern id={uid + 'g'} width={grid || 5} height={grid || 5} patternUnits="userSpaceOnUse">
-              <circle cx={(grid || 5) / 2} cy={(grid || 5) / 2} r={(grid || 5) * (grain || 0.2)} className="ax-strip-grain" />
-            </pattern>
-            <clipPath id={uid + 'c'}><path d={AX_SHAPE} /></clipPath>
-          </defs>
-        )}
-        {kind === 'line' && (
-          <g className={motion ? 'ax-draw-on' : undefined}>
-            <path d={axCoastD(14)} className="ax-strip-echo ax-strip-echo--2" pathLength="1" vectorEffect="non-scaling-stroke" />
-            <path d={axCoastD(7)} className="ax-strip-echo" pathLength="1" vectorEffect="non-scaling-stroke" />
-            <path d={AX_SHAPE} className="ax-strip-edge" pathLength="1" vectorEffect="non-scaling-stroke" />
-          </g>
-        )}
-        {kind === 'grid' && (
-          <g>
-            <rect x="-20" y="-20" width={AX_W + 40} height={AX_H + 40} fill={`url(#${uid}g)`} clipPath={`url(#${uid}c)`} />
-            <path d={AX_SHAPE} className="ax-strip-rim" vectorEffect="non-scaling-stroke" />
-          </g>
-        )}
-        <g className={motion ? 'ax-pop-on' : undefined}>
-          {AX_DOTS_NS.map((d, i) => (
-            <circle key={d.id} cx={d.xy[0]} cy={d.xy[1]} r={r || 2.6} className="ax-strip-dot" vectorEffect="non-scaling-stroke" style={motion ? { animationDelay: (kind === 'line' ? 1100 : 250) + i * 70 + 'ms' } : undefined} />
-          ))}
-        </g>
-      </svg>
-    );
-  }
 
   // Slate's Strip (the owner's mix, 2026-11-15, decisions/auth.md): the land as a fine dot grid, the coast one
   // bright line with three faint sea lines offshore, the spaces in the berry. Nine of them sit within 2 km in Gaza
@@ -315,18 +272,13 @@
     const [theme, setTheme] = useTheme();
     const linkHome = page !== 'change';
     // The panel's art sits where the land isn't: the Strip runs from the north-east to the south-west.
-    const align = design === 'coast' ? 'xMidYMin slice' : design === 'dots' ? 'xMidYMid meet' : DIR === 'rtl' ? 'xMinYMid meet' : 'xMaxYMid meet';
+    const align = DIR === 'rtl' ? 'xMinYMid meet' : 'xMaxYMid meet';
     return (
       <div className={['ax', 'ax--' + design, 'ax-p--' + page].join(' ')}>
         <SkipLink />
         <div className="ax-grid">
           <div className="ax-col">
             <div className="ax-head">
-              {design === 'coast' && (
-                <div className="ax-band" aria-hidden="true">
-                  <AxStrip kind="line" decorative viewBox="110 34 200 80" align="xMidYMid slice" r={1.5} />
-                </div>
-              )}
               <header className="ax-top">
                 <AxLogo link={linkHome} />
                 {AX_DESIGNS[design].wayBackTop && wayBack && <div className="ax-top-back">{wayBack}</div>}
@@ -346,9 +298,7 @@
               </div>
             )}
             <div className="ax-panel-art">
-              {design === 'slate' && <AxSlateStrip align={align} />}
-              {design === 'coast' && <AxStrip kind="line" viewBox="96 -24 220 250" align={align} r={2} motion />}
-              {design === 'dots' && <AxStrip kind="grid" align={align} r={3} grid={4.6} grain={0.24} motion />}
+              <AxSlateStrip align={align} />
             </div>
             <p className="ax-panel-cap"><span className="ax-cap-dot" aria-hidden="true"></span>{W.caption}</p>
           </aside>
@@ -358,14 +308,13 @@
     );
   }
 
-  // The page's head: its h1 and line. Dots puts a small Strip beside it on the phone and tablet.
-  function AxHead({ design, title, lede, mark }) {
+  // The page's head: its h1 and line.
+  function AxHead({ title, lede, mark }) {
     return (
       <div className="ax-head-text">
         <div className="ax-title-row">
           {mark}
           <h1 className="ax-h1">{title}</h1>
-          {design === 'dots' && <AxStrip kind="grid" decorative className="ax-mini" r={11} grid={19} grain={0.3} />}
         </div>
         {lede && <p className="ax-lede">{lede}</p>}
       </div>
@@ -524,7 +473,6 @@
         </div>
         <div className="ax-foot">
           <p className="ax-foot-line">{W.signIn.noAccount} <a className="ax-link" href={withNext('Register.html')}>{W.signIn.create}</a></p>
-          {!AX_DESIGNS[design].polish && <div className="ax-foot-back"><AxWayBack /></div>}
         </div>
       </AxFrame>
     );
@@ -602,7 +550,6 @@
           {at === 'foot' && owner}
           <p className="ax-foot-line">{W.register.have} <a className="ax-link" href={withNext('Sign in.html')}>{W.register.signIn}</a></p>
           {!AX_DESIGNS[design].polish && <p className="ax-foot-small">{W.register.privacyRead} <a className="ax-link" href="Privacy.html">{W.register.privacyLink}</a></p>}
-          {!AX_DESIGNS[design].polish && <div className="ax-foot-back"><AxWayBack /></div>}
         </div>
       </AxFrame>
     );
@@ -675,7 +622,7 @@
         </div>
         <div className="ax-foot">
           <p className="ax-foot-line">{W.forgot.noAccess} <a className="ax-link" href={AX_WA} target="_blank" rel="noopener">{W.forgot.contact}</a></p>
-          <div className="ax-foot-back"><a className="ax-back" href={withNext('Sign in.html')}><ArrowStartIcon aria-hidden="true" /><span>{W.forgot.back}</span></a></div>
+          <div><a className="ax-back" href={withNext('Sign in.html')}><ArrowStartIcon aria-hidden="true" /><span>{W.forgot.back}</span></a></div>
         </div>
       </AxFrame>
     );
@@ -740,7 +687,7 @@
       <AxFrame design={design} page="reset" wayBack={view !== 'success' ? back : null}>
         {head}
         <div className="ax-body">{body}</div>
-        {view !== 'success' && <div className="ax-foot"><div className="ax-foot-back">{back}</div></div>}
+        {view !== 'success' && <div className="ax-foot"><div>{back}</div></div>}
       </AxFrame>
     );
   }

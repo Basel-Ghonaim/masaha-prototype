@@ -12,21 +12,21 @@ the berry. Production's facts are masaha's (`docs/features/auth.md`, the copy ca
 and masaha disagree, masaha is right.
 
 **Compare them** in [`prototype/Auth lab.html`](../prototype/Auth%20lab.html): the design, the page, its
-state, the language, the theme and the width (or all three widths), or «قارن التصاميم»: the four designs side by side at 390, two by two at
+state, the language, the theme and the width (or all three widths), or «قارن التصاميم»: the original and its designs side by side at 390, two by two at
 768 and 1440 (it opens at 390). The view is kept in the address.
 
 ## How the variants are built
 
 - Each page's variant is `variants/<Page>/<design>.jsx` and `.css`, registered in
-  `variants/index.js` under the three names below (built inside a function, so the file adds no
+  `variants/index.js` under the names below (built inside a function, so the file adds no
   top-level name to the pages' one global scope). The five files of a design are two lines each: they
   load one kit, **`variants/_auth/kit.jsx`**, compiled by the page's own Babel (a synchronous read, once),
   and draw their page; the CSS files import `_auth/base.css` and `_auth/<design>.css`. The page logic is
-  one for the three designs, so a state behaves the same in each and only the design differs.
+  one for every design, so a state behaves the same in each and only the design differs.
 - The kit reads the shared modules (`shared.jsx`, `auth.jsx`) and changes none; its names start with
   `Ax`/`ax`, so no page global is overwritten.
 - **The reset e-mail** has no script for a `?v=` to replace, and the original is never edited, so its
-  three designs are standalone pages: `variants/Reset email/<design>.html` (the lab shows them).
+  design is a standalone page: `variants/Reset email/<design>.html` (the lab shows it).
 
 ## The fixed points each design keeps
 
@@ -48,9 +48,8 @@ state, the language, the theme and the width (or all three widths), or «قار�
 - **The panel is the ink in both themes** (`neutral-900`; in dark, a hairline `neutral-800` at its start
   edge): the brand's surface, not an action, so it does not invert to `neutral-50`, which would glare
   beside a dark page. On it the dark logo (`masaha-logo-dark-berry.svg`) and the spark at `spark-400`.
-- **The critique's points, in all three:** Google's button in Google's dark theme with no white frame,
-  as wide and as tall as the fields (1, 2) — in the drawing only for Coast and Dots; Slate's polish draws
-  it at the box production's Google button has, 40 × at most 400, and sizes the column to it; forgot password's form shown at once, the recovery's read a
+- **The critique's points:** Google's button in Google's dark theme with no white frame (1, 2); Slate's
+  polish draws it at the box production's Google button has, 40 × at most 400, and sizes the column to it; forgot password's form shown at once, the recovery's read a
   thin bar over it, its failure a note with «إعادة المحاولة» over the form (3); the forced change with
   the language and theme switches beside «تسجيل الخروج» (4); the password conditions as a tick or a dash,
   never a circle (5); one top offset (6); a real h1, 26–40 px, over its line (7); no frame in a frame on
@@ -116,60 +115,13 @@ state, the language, the theme and the width (or all three widths), or «قار�
     owner's choice) — *the heaviest element of the page becomes one quiet line.*
   - A drawing of the Strip with a magnified circle: a new kind of figure.
 - **Kept:** the system's alerts, type face and weights, its radii; the order of the form.
-- **Coast and Dots are kept as they were** when the owner chose Slate: the polish is behind Slate's own
-  flag (`polish` in the kit's `AX_DESIGNS`) and stylesheet. Two fixes reach all three, as they change
-  nothing seen: the digit rule is production's `\p{N}` (it was 0–9 and ٠–٩), and an effect that did
-  nothing was removed.
+- **The polish** is behind Slate's own flag (`polish` in the kit's `AX_DESIGNS`) and stylesheet.
 
-### `coast` — «الساحل» Coast (2026-11-15)
-*The Strip as a drawn line: the coast drawn in once, cropped by a narrower panel; on the phone it
-crosses an ink band that carries the brand.*
-- **What it changes:** the form gets the wider column (7 : 5). The panel draws the Strip's outline as a
-  single line (`neutral-400`, 1.5 px) with two echoes of the coast offshore (`neutral-700`, `neutral-800`),
-  larger than the panel, so its north — where most spaces are — fills the lower half and the south runs
-  off the edge; the title (46 px) and line at the top. Below 1280 the header is an **ink band** (116 px on
-  the phone, 148 on the tablet) with the dark logo, the tools, and the same line crossing it over Gaza
-  City's dots; the form starts 28 px under it. Editorial type: h1 40 / 1.3 (30 on the phone), lede 17 px,
-  labels 15 px, controls 48 px (52 on the phone). States are an edge at the start and words, no box; the
-  sent address sits on `muted` with a berry edge. The conditions run on one line that wraps. The way back
-  sits in the top bar from 1280. The owner note under the page's line, with a grey edge.
-- **Motion:** the line draws in over 1.4 s and the echoes follow; then the dots appear north to south,
-  70 ms apart. Off under `prefers-reduced-motion` (the drawing shows whole).
-- **Proposed against masaha's design system:** a display step for the auth h1 (40 px) and the panel's
-  title (46 px); a 17 px lede; 48 px controls; the ink band as the focus shell's header below 1280; a
-  state drawn as a 3 px edge with no fill (the system's `Alert` is a box); a one-time drawing motion,
-  longer than the system's 250 ms.
-- **Kept:** the type face; the colours of each state (the edge takes the state's colour); the order of
-  the form.
-
-### `dots` — «النقاط» Dots (2026-11-15)
-*The Strip drawn by its grain: a field of small dots, the spaces lit in the berry; the widest panel and
-the most precise form.*
-- **What it changes:** the panel takes the wider column (5 : 7). The Strip is a grid of small dots
-  (`neutral-600`, about every 500 m) clipped to the outline, a faint rim, the full height of the panel;
-  the 13 spaces are larger berry dots at their real places (not snapped to the grid). The title is the
-  largest of the three (54 px), in the corner the land leaves empty (the foot of the start side in
-  Arabic, its top in English). The form is narrow (380 px), its h1 28 px, 136 px from the top.
-  States are compact tinted bars. The conditions are **three short bars**, each named under it, which
-  fill with the ink as they are met (red after a submit while unmet) — a checklist, not a strength meter.
-  The sent address is a pill with a berry dot. The owner note on `muted`, under the page's line. Below
-  1280 a small dotted Strip (58 × 74 px) stands beside the h1: the phone's touch of the brand.
-- **Motion:** the berry dots appear north to south, 70 ms apart, after 250 ms; off under reduced motion.
-- **Proposed against masaha's design system:** the panel title at 54 / 1.3 (a display step); the
-  conditions as bars (the system's `PasswordRules` is a list with marks); compact alerts (13.5 px).
-- **Kept:** the type scale for the form (28 px h1 is `heading-1`'s phone size), 44 px controls on
-  desktop, the system's radii.
-
-### The reset e-mail, in each design
+### The reset e-mail, in Slate
 Within e-mail limits (tables, inline styles, no SVG, no image, no web font required); the brand is the
 word «مساحة», as production's e-mail has it; production's words and its link printed as text.
 - **Slate:** the ink band with the word in white, the card under it, the button the card's width, and
   the action's words as the card's title. No spark.
-- **Coast:** no card: an ink rule across the top, the word, a large title (32 px), the words on white;
-  *proposal against foundation §16 (no spark in the e-mail):* the hour the link lasts marked by a 3 px
-  berry edge.
-- **Dots:** a compact card on `neutral-100`, the button full width, the link in its own quiet box, in a
-  monospaced face; *proposal against §16:* a berry dot before the word, as the logo's.
 - The greeting «مرحبًا،» is kept but joined to the request's line; the title is the action's own words
   («تعيين كلمة مرور جديدة»), no new words.
 
@@ -182,7 +134,7 @@ word «مساحة», as production's e-mail has it; production's words and its l
 | The Strip's caption | كل نقطة مساحة عمل في الدليل | Each dot is a space in the directory |
 | The Strip's name (assistive) | رسم لقطاع غزة، عليه مساحات العمل في الدليل | A drawing of the Gaza Strip, with the directory's coworking spaces on it |
 | The Strip's description (assistive) | رسم فنّي لا خريطة. النقاط من بيانات الدليل في 14 نوفمبر 2026. | An artistic drawing, not a map. The dots are from the directory's data of 14 November 2026. |
-| The letter rule (replaces «حرف واحد على الأقل»; Coast and Dots) | حرف واحد على الأقل، بأي لغة | At least one letter, in any language |
+| The letter rule (replaces «حرف واحد على الأقل»; the checklist, which Slate's one line replaces) | حرف واحد على الأقل، بأي لغة | At least one letter, in any language |
 | Slate's password line, before typing | 8 أحرف على الأقل، فيها حرف ورقم | At least 8 characters, with a letter and a number |
 | … while typing: a letter, a digit, both | ينقصها حرف · ينقصها رقم · ينقصها حرف ورقم | Needs a letter · Needs a number · Needs a letter and a number |
 | … while typing: the length alone (1, 2, 3–7) | ينقصها حرف واحد / حرفان / N أحرف لتصل إلى 8 | Needs 1 more character / N more characters to reach 8 |
@@ -218,6 +170,9 @@ password, by design (the API never says which): its state is `error`.
   look more professional". Coast and Dots stay as they are, with no more work on them. Slate then had
   one polish round (above), from the review of the three designs and the supervisor's look at its
   captures; the one-line password conditions and the centred foot are the owner's own points.
+- 2026-11-19 — **Coast and Dots retired** (the owner's word: "we won't adopt them"): their files, the
+  lab's two entries and the kit's code for them removed. Their description is this file's history
+  before this date. Slate stays.
 - 2026-11-15 — **the owner's mix for Slate's drawing**, drawn by the supervisor: the land as a fine dot grid, the coast one bright line with three faint sea lines, the 13 real spaces in the berry, and a berry lens over the sea that shows Gaza City ×3.5 — fully over the sea (the earlier circle edged onto the land). The phone's small Strip mark is removed (it read as a stray icon).
 - 2026-11-15 — **the panel is the deepest surface in both themes**: in dark a step deeper than the page in the same cool ink (`neutral-950` 70 % with black). A berry-tinted panel was tried and rejected by the owner (two blacks of different hue, and lighter than the page).
 - 2026-11-15 — **the order** (the owner's points): register's owners' note under the lede, before the form; the privacy line under the button; the foot one line («لديك حساب؟ تسجيل الدخول» / «ليس لديك حساب؟ إنشاء حساب») — «العودة إلى الرئيسية» dropped from sign in and register, the logo being the way home. Forgot and reset keep their way back to sign in.
