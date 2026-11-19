@@ -1,0 +1,4 @@
+/* Sign in in the round-4 design «clearing» Clearing: the kit's base, Slate's form, then its own frame (decisions/auth.md). */
+@import url("../_auth/base.css");
+@import url("../_auth/slate.css");
+@import url("../_auth/clearing.css");

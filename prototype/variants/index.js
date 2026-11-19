@@ -20,6 +20,7 @@ window.MASAHA_VARIANTS = (function () {
       { name: 'slate2', ar: 'اللوح ٢', en: 'Slate 2', css: true },
       { name: 'atlas', ar: 'الأطلس', en: 'Atlas', css: true },
       { name: 'threshold', ar: 'العتبة', en: 'Threshold', css: true },
+      { name: 'clearing', ar: 'الفسحة', en: 'Clearing', css: true },
     ]),
     'Register': auth,
     'Forgot password': auth,

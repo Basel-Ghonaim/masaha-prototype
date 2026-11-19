@@ -205,6 +205,27 @@ heading and one column, and GitHub's and Amazon's "new here?" block are the refe
 - **Kept:** Slate's form, its rhythm and its states. All the words are the catalogue's; this design adds none.
   There is still no way back, since the logo is the way home (Slate's order).
 
+### `clearing` — «الفسحة» Clearing (Sign in only, 2026-11-19, round 4)
+*مساحة is an open space. The page is a field of the logo's own shape, and the form stands in a clearing of it. The
+brand is the ground itself, with no panel, no picture and no words of its own.*
+- **What it changes:**
+  - **The ground:** from the header down, a field of small rounded squares, 4 px on one 16 px grid
+    (`neutral-300` at 75 %; dark `neutral-800`). This is the logo's dot shape, as a texture.
+  - **The clearing:** the cells within a rounded box 56 × 48 px around the form (40 × 24 on the phone) are left
+    empty, whole squares at a time, round at its corners (40 px; 24 on the phone). There is no card, no border and
+    no shadow, only where the field stops. It is redrawn from the form's own box on a resize and on a change of
+    state, so an alert grows the clearing with the form.
+  - **The ة's dots:** two cells of the field over the clearing's centre are drawn in the berry, 10 px each, as the
+    ة's two dots stand over the letter in the logo. The spark marks the space.
+  - **The form** is centred at every width, its h1 at a fixed offset from the top (208 px from 1280, 192 on the
+    tablet, 128 on the phone). The logo stays in the header.
+- **Proposed against masaha's design system:** a ground texture, which is a new surface; and the berry pair as a
+  mark over the page's form.
+- **Kept:** Slate's form, its rhythm, its states and its foot.
+- **Its risk, stated:** the composition is the original's, a centred form. What changes is that the empty page
+  becomes a ground with a meaning. If the owner's objection was the emptiness, this answers it. If it was the
+  centred form, it does not.
+
 ### The reset e-mail, in Slate
 Within e-mail limits (tables, inline styles, no SVG, no image, no web font required); the brand is the
 word «مساحة», as production's e-mail has it; production's words and its link printed as text.

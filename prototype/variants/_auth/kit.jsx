@@ -21,6 +21,7 @@
     // `ax--slate` too), each with a panel or a frame of its own.
     atlas: { ownerNote: 'top', wayBackTop: false, polish: true, slateForm: true, panel: 'atlas' }, // AxAtlasPanel
     threshold: { ownerNote: 'top', wayBackTop: false, polish: true, slateForm: true, frame: 'threshold' }, // AxThreshold
+    clearing: { ownerNote: 'top', wayBackTop: false, polish: true, slateForm: true, frame: 'clearing' }, // AxClearing
   };
 
   // ── Words. The product's own are masaha's catalogue (apps/web/src/shared/copy), as they are;
@@ -502,6 +503,81 @@
     );
   }
 
+  // ── Clearing «الفسحة» (round 4, Sign in only): مساحة is an open space. The page is a field of the logo's own
+  //    shape, small rounded squares on one grid, and the form stands in a clearing of it — no card, no border,
+  //    only where the field stops, whole squares at a time, round at its corners. Above the clearing, two squares
+  //    of the field in the berry, as the ة's dots stand above the letter in the logo: the brand's spark marks the
+  //    space. Drawn in screen pixels from the form's own box, again on a resize or a change of state. ──
+  const AX_CL = { pitch: 16, tile: 4, spark: 10 };
+  function axClearCells(W2, H2, top, c) {
+    // The cells of the field (below the header) left whole: those whose square is outside the clearing's
+    // rounded box. One path for the field, the berry pair centred over the clearing's top edge.
+    const p = AX_CL.pitch, s = AX_CL.tile, o = (p - s) / 2;
+    const cols = Math.floor(W2 / p), rows = Math.floor((H2 - top) / p);
+    const x0 = Math.floor((W2 - cols * p) / 2);
+    // A square (x..x+s, y..y+s) is in the clearing if it touches the rounded box c = {x, y, w, h, r}: the box
+    // is its inner rectangle grown by r, so the square touches it within r of that rectangle.
+    const inside = (x, y) => {
+      const dx = Math.max(0, c.x + c.r - (x + s), x - (c.x + c.w - c.r));
+      const dy = Math.max(0, c.y + c.r - (y + s), y - (c.y + c.h - c.r));
+      return Math.hypot(dx, dy) <= c.r;
+    };
+    // The berry pair: the two cells nearest the clearing's centre, in the row just above it.
+    const mid = c.x + c.w / 2;
+    const prow = Math.floor((c.y - top) / p) - 1;
+    const pc = Math.round((mid - x0) / p - 1);
+    let d = '';
+    const r = 1.25;
+    for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+      const x = x0 + i * p + o, y = top + j * p + o;
+      if (j === prow && (i === pc || i === pc + 1)) continue;
+      if (inside(x, y)) continue;
+      d += `M${x + r} ${y}h${s - 2 * r}a${r} ${r} 0 0 1 ${r} ${r}v${s - 2 * r}a${r} ${r} 0 0 1 -${r} ${r}h-${s - 2 * r}a${r} ${r} 0 0 1 -${r} -${r}v-${s - 2 * r}a${r} ${r} 0 0 1 ${r} -${r}z`;
+    }
+    const k = AX_CL.spark, ko = (p - k) / 2;
+    const pair = prow >= 0 ? [pc, pc + 1].map((i) => ({ x: x0 + i * p + ko, y: top + prow * p + ko, s: k })) : [];
+    return { d, pair };
+  }
+  function AxClearing({ design, head, body, foot }) {
+    const [theme, setTheme] = useTheme();
+    const rootRef = React.useRef(null), formRef = React.useRef(null), topRef = React.useRef(null);
+    const [field, setField] = React.useState(null);
+    React.useLayoutEffect(() => {
+      const root = rootRef.current, form = formRef.current, top = topRef.current;
+      if (!root || !form || !top) return undefined;
+      const draw = () => {
+        const R = root.getBoundingClientRect(), F = form.getBoundingClientRect(), T = top.getBoundingClientRect();
+        const wide = R.width >= 768;
+        const pad = wide ? { x: 56, y: 48 } : { x: 40, y: 24 };
+        const c = { x: F.left - R.left - pad.x, y: F.top - R.top - pad.y, w: F.width + 2 * pad.x, h: F.height + 2 * pad.y, r: wide ? 40 : 24 };
+        setField(Object.assign({ w: R.width, h: R.height }, axClearCells(R.width, R.height, T.bottom - R.top, c)));
+      };
+      draw();
+      const ro = new ResizeObserver(draw);
+      ro.observe(root); ro.observe(form);
+      return () => ro.disconnect();
+    }, []);
+    return (
+      <div ref={rootRef} className={['ax', 'ax--' + design, 'ax--slate', 'ax-p--signin'].join(' ')}>
+        <SkipLink />
+        {field && (
+          <svg className="ax-cl-field" width={field.w} height={field.h} viewBox={`0 0 ${field.w} ${field.h}`} aria-hidden="true" focusable="false">
+            <path d={field.d} className="ax-cl-tile" />
+            {field.pair.map((q, i) => <rect key={i} x={q.x} y={q.y} width={q.s} height={q.s} rx={q.s * 0.28} className="ax-cl-spark" />)}
+          </svg>
+        )}
+        <header ref={topRef} className="ax-top ax-cl-top">
+          <AxLogo />
+          <AxTools theme={theme} setTheme={setTheme} />
+        </header>
+        <main id="main" className="ax-cl-main" tabIndex={-1}>
+          <div ref={formRef} className="ax-form ax-cl-form">{head}{body}{foot}</div>
+        </main>
+        <PageToaster />
+      </div>
+    );
+  }
+
   // The page's head: its h1 and line.
   function AxHead({ title, lede, mark }) {
     return (
@@ -671,6 +747,7 @@
         </div>
     );
     if (AX_DESIGNS[design].frame === 'threshold') return <AxThreshold design={design} head={head} body={body} />;
+    if (AX_DESIGNS[design].frame === 'clearing') return <AxClearing design={design} head={head} body={body} foot={foot} />;
     return (
       <AxFrame design={design} page="signin" wayBack={<AxWayBack />}>
         {head}

@@ -1,0 +1,25 @@
+/* «الفسحة» Clearing — round 4, Sign in only (2026-11-19, decisions/auth.md). Slate's form (the frame carries
+   `ax--slate` too); this file draws its ground. مساحة is an open space: the page is a field of the logo's own shape,
+   small rounded squares on one 16 px grid, and the form stands in a clearing of it — no card, no border, no shadow:
+   only where the field stops, whole squares at a time. Two squares of the field in the berry stand over the
+   clearing as the ة's dots stand over the letter in the logo. No panel, no art but the ground itself. */
+
+.ax--clearing { position: relative; isolation: isolate; display: flex; flex-direction: column; }
+.ax-cl-field { position: absolute; inset-block-start: 0; left: 0; z-index: -1; display: block; pointer-events: none; }
+.ax-cl-tile { fill: var(--neutral-300); fill-opacity: .75; }
+[data-theme=dark] .ax-cl-tile { fill: var(--neutral-800); fill-opacity: 1; }
+.ax-cl-spark { fill: var(--spark); }
+
+.ax--clearing .ax-cl-top { min-height: 64px; }
+.ax-cl-main { flex: 1; padding: 64px 20px 72px; outline: none; }
+.ax--clearing .ax-cl-form { max-width: var(--ax-form-w); margin-inline: auto; }
+
+@media (min-width: 768px) {
+  .ax--clearing .ax-cl-top { min-height: 72px; }
+  .ax-cl-main { padding: 120px 32px 120px; }
+}
+@media (min-width: 1280px) {
+  /* The logo stays in the header at every width: this page has no panel to carry it. */
+  .ax--clearing .ax-top .ax-logo { display: inline-block; }
+  .ax-cl-main { padding-block: 136px 136px; }
+}
