@@ -1,0 +1,20 @@
+/* «اللوح ٢» Slate 2 — Sign in only (2026-11-19, decisions/auth.md). Slate's form and stylesheet (the frame
+   carries `ax--slate` too); this file draws only the new panel. The owner's critique of Slate: the panel
+   looked half empty, its logo, drawing and words three islands on no common line. So: a narrower panel
+   (5 : 7), the Strip drawn larger than it as its spine, running off its top and its far side, and every
+   word in one block — the title and a line on what the product is — with the logo in the page header. */
+
+.ax--slate2 { --ax-cols: minmax(0, 7fr) minmax(0, 5fr); }
+
+@media (min-width: 1280px) {
+  /* The logo stays in the page's header, at its start, as below 1280: the panel carries no word but its own. */
+  .ax--slate2 .ax-top .ax-logo { display: inline-block; }
+  .ax--slate2 .ax-panel { padding: 48px 56px 56px; }
+  .ax--slate2 .ax-panel-art { inset: 0; }
+
+  /* The words: one block in the bottom-right corner, which the land leaves empty in both languages (the
+     drawing is never mirrored): the start edge in Arabic, the end in English. */
+  .ax--slate2 .ax-panel-foot { position: relative; z-index: 1; margin-block-start: auto; width: min(360px, 62%); display: flex; flex-direction: column; gap: 32px; }
+  html[dir=ltr] .ax--slate2 .ax-panel-foot { margin-inline-start: auto; }
+  .ax--slate2 .ax-panel-copy { width: auto; margin: 0; }
+}

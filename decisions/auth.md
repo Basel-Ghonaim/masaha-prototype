@@ -117,6 +117,25 @@ state, the language, the theme and the width (or all three widths), or «قار�
 - **Kept:** the system's alerts, type face and weights, its radii; the order of the form.
 - **The polish** is behind Slate's own flag (`polish` in the kit's `AX_DESIGNS`) and stylesheet.
 
+### `slate2` — «اللوح ٢» Slate 2 (Sign in only, 2026-11-19)
+*The owner's critique of Slate's panel: it looked half empty — a logo, a drawing and a few words — and
+its parts unrelated. The supervisor's reading: three islands on no common line, a drawing cut off at
+random, a panel larger than what it carries, and its line repeating the form's lede.*
+- **What it changes (the panel only; the form is Slate's, the frame carries `ax--slate` too):**
+  - **The panel is narrower:** 5 : 7 (the form's column the wider).
+  - **The Strip is the panel's art:** drawn larger than the panel (`slice`), its land running off the
+    top and the bottom, **all 13 spaces in view** at 1280, 1440 and 1920; **no lens** — at this size
+    Gaza City's nine read apart on the Strip itself.
+  - **The words are one block** in the bottom-right corner the land leaves empty (the start in Arabic,
+    the end in English): the title and a **new line on what the product is** (not the form's lede again).
+  - **The logo leaves the panel** for the page's header, at its start beside the tools, as below 1280.
+- **Proposed against masaha's design system:** the panel at 5 : 7.
+- **The owner's look (2026-11-19):** a count of the spaces was tried under the words and removed — "it
+  will change, and has nothing to do with a sign-in page". And the drawing "is now neither east nor west:
+  nothing can be understood from it" — the Strip cropped this large no longer reads as a place. A new
+  round of designs follows, by a worker of its own (the supervisor's `DESIGN\AUTH\7_NEW_DESIGNS_PROMPT.md`).
+- **Kept:** Slate's form, its rhythm, its states; the ink panel; the drawing's grid, coast and sea lines.
+
 ### The reset e-mail, in Slate
 Within e-mail limits (tables, inline styles, no SVG, no image, no web font required); the brand is the
 word «مساحة», as production's e-mail has it; production's words and its link printed as text.
@@ -132,6 +151,7 @@ word «مساحة», as production's e-mail has it; production's words and its l
 | The panel's title | أين تعمل اليوم؟ | Where will you work today? |
 | The panel's line | بحسابك تحفظ مساحاتك المفضّلة وتتابع بلاغاتك، ومنه يدير أصحاب المساحات مساحاتهم. | Your account keeps your favourite spaces and follows your reports; space owners run their space from it. |
 | The Strip's caption | كل نقطة مساحة عمل في الدليل | Each dot is a space in the directory |
+| Slate 2's panel line | دليل مساحات العمل في قطاع غزة: ساعاتها وأسعارها، وهل هي مفتوحة الآن. | The Gaza Strip's coworking directory: their hours, their prices, and whether they're open now. |
 | The Strip's name (assistive) | رسم لقطاع غزة، عليه مساحات العمل في الدليل | A drawing of the Gaza Strip, with the directory's coworking spaces on it |
 | The Strip's description (assistive) | رسم فنّي لا خريطة. النقاط من بيانات الدليل في 14 نوفمبر 2026. | An artistic drawing, not a map. The dots are from the directory's data of 14 November 2026. |
 | The letter rule (replaces «حرف واحد على الأقل»; the checklist, which Slate's one line replaces) | حرف واحد على الأقل، بأي لغة | At least one letter, in any language |

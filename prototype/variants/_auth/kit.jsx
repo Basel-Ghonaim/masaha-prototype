@@ -14,6 +14,8 @@
   // form's offline words on forgot password, and the forced change's panel without its words.
   const AX_DESIGNS = {
     slate: { ownerNote: 'top', wayBackTop: false, polish: true },
+    // Slate's second version (Sign in only, 2026-11-19): Slate's form and stylesheet, a new panel (AxPanelV2).
+    slate2: { ownerNote: 'top', wayBackTop: false, polish: true, v2: true },
   };
 
   // ── Words. The product's own are masaha's catalogue (apps/web/src/shared/copy), as they are;
@@ -26,7 +28,9 @@
     panelLine: tr('بحسابك تحفظ مساحاتك المفضّلة وتتابع بلاغاتك، ومنه يدير أصحاب المساحات مساحاتهم.', 'Your account keeps your favourite spaces and follows your reports; space owners run their space from it.'),
     caption: tr('كل نقطة مساحة عمل في الدليل', 'Each dot is a space in the directory'),
     stripName: tr('رسم لقطاع غزة، عليه مساحات العمل في الدليل', 'A drawing of the Gaza Strip, with the directory’s coworking spaces on it'),
-    stripDesc: tr('رسم فنّي لا خريطة. النقاط من بيانات الدليل في 14 نوفمبر 2026.', 'An artistic drawing, not a map. The dots are from the directory’s data of 14 November 2026.'),
+    // NEW (Slate 2): the panel says what the product is, not what the form's lede says.
+    v2Line: tr('دليل مساحات العمل في قطاع غزة: ساعاتها وأسعارها، وهل هي مفتوحة الآن.', 'The Gaza Strip’s coworking directory: their hours, their prices, and whether they’re open now.'),
+    stripDesc: tr('رسم فنّي لا خريطة. النقاط من بيانات الدليل في 14 نوفمبر 2026.','An artistic drawing, not a map. The dots are from the directory’s data of 14 November 2026.'),
     lang: LANG === 'en' ? 'العربية' : 'English',
     themeTo: (t) => (t === 'light' ? tr('المظهر الداكن', 'Dark theme') : tr('المظهر الفاتح', 'Light theme')),
     // catalogue: auth
@@ -197,15 +201,18 @@
   const AX_CX = AX_CITY.reduce((a, d) => a + d.xy[0], 0) / 9, AX_CY = AX_CITY.reduce((a, d) => a + d.xy[1], 0) / 9;
   // The lens's view is centred a little west of the city, so its coast runs through it.
   const AX_INSET = { x: 62, y: 100, r: 62, m: 3.5, vx: 191, vy: AX_CY };
-  function AxSlateStrip({ align }) {
+  // `viewBox` and `lens` serve Slate 2 (Sign in only): a cropped view drawn larger than its box (`slice`), and
+  // no lens — at that size Gaza City's nine read apart on the Strip itself. Slate passes neither.
+  function AxSlateStrip({ align, viewBox, lens = true }) {
     const ref = React.useRef(null);
     const [k, setK] = React.useState(0);
     const uid = 'ax' + React.useId().replace(/[^a-zA-Z0-9_-]/g, '');
-    const vb = [-12, -12, AX_W + 24, AX_H + 24];
+    const vb = viewBox || [-12, -12, AX_W + 24, AX_H + 24];
+    const fit = /slice/.test(align) ? Math.max : Math.min;
     React.useLayoutEffect(() => {
       const el = ref.current;
       if (!el) return undefined;
-      const measure = () => { const r = el.getBoundingClientRect(); if (r.width && r.height) setK(Math.min(r.width / vb[2], r.height / vb[3])); };
+      const measure = () => { const r = el.getBoundingClientRect(); if (r.width && r.height) setK(fit(r.width / vb[2], r.height / vb[3])); };
       measure();
       const ro = new ResizeObserver(measure);
       ro.observe(el);
@@ -237,6 +244,8 @@
         {[[18, 'ax-strip-sea ax-strip-sea--1'], [36, 'ax-strip-sea ax-strip-sea--2'], [54, 'ax-strip-sea ax-strip-sea--3']].map(([d, cls]) => <path key={d} d={axCoastD(u(d))} className={cls} vectorEffect="non-scaling-stroke" />)}
         <path d={AX_SHAPE} fill={`url(#${uid}g)`} />
         <path d={axCoastD(0)} className="ax-strip-coast" vectorEffect="non-scaling-stroke" />
+        {!lens && AX_DOTS.map((d) => <circle key={d.id} cx={d.xy[0]} cy={d.xy[1]} r={u(4.5)} className="ax-strip-dot" style={{ strokeWidth: u(2) }} />)}
+        {lens && <>
         <circle cx={AX_CX} cy={AX_CY} r={ringR} className="ax-strip-ring" vectorEffect="non-scaling-stroke" />
         <line x1={lead[0]} y1={lead[1]} x2={lead[2]} y2={lead[3]} className="ax-strip-lead" vectorEffect="non-scaling-stroke" />
         {AX_CITY.map((d) => <circle key={d.id} cx={d.xy[0]} cy={d.xy[1]} r={u(2.5)} className="ax-strip-dot" style={{ strokeWidth: u(1) }} />)}
@@ -250,7 +259,30 @@
         </g>
         <circle cx={I.x} cy={I.y} r={I.r} className="ax-strip-inset-edge" vectorEffect="non-scaling-stroke" />
         {AX_CITY.map((d) => { const p = inI(d.xy); return <circle key={d.id} cx={p[0]} cy={p[1]} r={u(6.5)} className="ax-strip-dot" style={{ strokeWidth: u(2) }} />; })}
+        </>}
       </svg>
+    );
+  }
+
+  // ── Slate 2's panel (the owner's critique, 2026-11-19: Slate's panel looked half empty and its parts
+  //    unrelated). The Strip is the panel's art, drawn larger than the panel so its land runs off the top
+  //    and the bottom, its 13 spaces all in view; the words are one block in the corner the land leaves
+  //    empty: the title and a line on what the product is (not the form's lede again). The logo leaves the
+  //    panel for the page's own header, at the start, beside the tools. ──
+  const AX_V2_VIEW = [32, 22, 250, 375];
+  function AxPanelV2({ page }) {
+    return (
+      <aside className="ax-panel" aria-label={W.brand}>
+        <div className="ax-panel-art"><AxSlateStrip align="xMinYMin slice" viewBox={AX_V2_VIEW} lens={false} /></div>
+        <div className="ax-panel-foot">
+          {page !== 'change' && (
+            <div className="ax-panel-copy">
+              <p className="ax-panel-title">{W.panelTitle}</p>
+              <p className="ax-panel-line">{W.v2Line}</p>
+            </div>
+          )}
+        </div>
+      </aside>
     );
   }
 
@@ -273,8 +305,9 @@
     const linkHome = page !== 'change';
     // The panel's art sits where the land isn't: the Strip runs from the north-east to the south-west.
     const align = DIR === 'rtl' ? 'xMinYMid meet' : 'xMaxYMid meet';
+    const v2 = AX_DESIGNS[design].v2;
     return (
-      <div className={['ax', 'ax--' + design, 'ax-p--' + page].join(' ')}>
+      <div className={['ax', 'ax--' + design, v2 && 'ax--slate', 'ax-p--' + page].filter(Boolean).join(' ')}>
         <SkipLink />
         <div className="ax-grid">
           <div className="ax-col">
@@ -289,7 +322,7 @@
               <div className="ax-form">{children}</div>
             </main>
           </div>
-          <aside className="ax-panel" aria-label={W.brand}>
+          {v2 ? <AxPanelV2 page={page} /> :<aside className="ax-panel" aria-label={W.brand}>
             <AxLogo onInk link={linkHome} />
             {!(AX_DESIGNS[design].polish && page === 'change') && (
               <div className="ax-panel-copy">
@@ -301,7 +334,7 @@
               <AxSlateStrip align={align} />
             </div>
             <p className="ax-panel-cap"><span className="ax-cap-dot" aria-hidden="true"></span>{W.caption}</p>
-          </aside>
+          </aside>}
         </div>
         <PageToaster />
       </div>

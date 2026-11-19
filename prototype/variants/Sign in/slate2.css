@@ -1,0 +1,4 @@
+/* Sign in in Slate's second version «slate2»: the kit's base, Slate, then its own panel (decisions/auth.md). */
+@import url("../_auth/base.css");
+@import url("../_auth/slate.css");
+@import url("../_auth/slate2.css");
