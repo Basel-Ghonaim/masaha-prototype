@@ -136,6 +136,49 @@ random, a panel larger than what it carries, and its line repeating the form's l
   round of designs follows, by a worker of its own (the supervisor's `DESIGN\AUTH\7_NEW_DESIGNS_PROMPT.md`).
 - **Kept:** Slate's form, its rhythm, its states; the ink panel; the drawing's grid, coast and sea lines.
 
+### `atlas` — «الأطلس» Atlas (Sign in only, 2026-11-19, round 4)
+*The owner's look at Slate 2: the drawing "is neither east nor west — nothing can be understood from it". A map
+does not read as a place because it is drawn larger. It reads as one through its names, its north and its water.
+Round 4's designer (`DESIGN\AUTH\8_REPORT.md`): Slate's panel failed because nothing on it could be read, and
+because its parts never pointed at each other.*
+- **What it changes (the panel; the form is Slate's, and the frame carries `ax--slate` too):**
+  - **The panel is an atlas page,** 1 : 1 from 1280, in the ink (Slate's deepest ink in dark). It reads top to
+    bottom:
+    - the question «أين تعمل اليوم؟» and Slate 2's line on what the product is;
+    - the atlas;
+    - the key «كل نقطة مساحة عمل في الدليل», with a berry square.
+  - **The atlas:**
+    - The whole Strip, north up, never mirrored. The map is always west of its index, in both languages.
+    - It is drawn at the largest size the panel leaves it (about 1.35 px per 111 m at 1440).
+    - The land is Slate's dot grid, with a hairline border. The coast is the one bright line.
+    - The sea is hatched horizontally in a band along the coast, as engraved maps draw water, and named
+      «البحر المتوسط».
+    - A north arrow with «ش» sits at its head.
+    - The 13 spaces are berry squares, 7 px, with the logo's rounded corners, ringed in the ink. There is no lens:
+      Gaza City's nine read as a cluster, which is what they are.
+  - **The index:** to the land's east, four places, each on a parallel (a hairline at the mean latitude of its
+    spaces) that runs from its spaces to its name:
+    - غزة, for Gaza City's nine;
+    - النصيرات, for two;
+    - دير البلح, for one;
+    - المواصي, for one.
+    The names are the directory's own lookups: the governorate for Gaza City, the area for the others. The
+    snapshot gives Gaza City's nine three areas, one of them wrong (Golden Hub is filed under «شمال قطاع غزة» but
+    sits in Gaza City), so the city is named by its governorate. In Arabic the names end on the question's edge
+    (the right). In English the map starts on it (the left).
+  - **Below 1280,** the same panel closes the page under the form, at full width. The map is sized by the width
+    (0.6–1.15 px per 111 m), and the sea's name wraps rather than cross the hatching.
+  - **The logo** stays in the header at every width, as in Slate 2.
+  - Every stroke, square and label keeps its screen size (measured once laid out, and again on a resize).
+- **Proposed against masaha's design system:**
+  - **Place names on the drawing,** and a north mark and the sea's name. The earlier rounds chose "no place
+    names"; this proposes them, because they are what make the drawing a place.
+  - **A berry mark as a rounded square,** the logo's own dot, wherever the spark marks a place.
+  - The panel at 1 : 1, with Slate's surface and Slate's 40 px title.
+- **Kept:** Slate's form, its rhythm and its states; the ink panel; the Strip's outline and its 13 real spaces; no
+  count of any kind. In production, the squares and the names would both come from the directory's pins and
+  lookups, never from a list written by hand.
+
 ### The reset e-mail, in Slate
 Within e-mail limits (tables, inline styles, no SVG, no image, no web font required); the brand is the
 word «مساحة», as production's e-mail has it; production's words and its link printed as text.
@@ -152,6 +195,9 @@ word «مساحة», as production's e-mail has it; production's words and its l
 | The panel's line | بحسابك تحفظ مساحاتك المفضّلة وتتابع بلاغاتك، ومنه يدير أصحاب المساحات مساحاتهم. | Your account keeps your favourite spaces and follows your reports; space owners run their space from it. |
 | The Strip's caption | كل نقطة مساحة عمل في الدليل | Each dot is a space in the directory |
 | Slate 2's panel line | دليل مساحات العمل في قطاع غزة: ساعاتها وأسعارها، وهل هي مفتوحة الآن. | The Gaza Strip's coworking directory: their hours, their prices, and whether they're open now. |
+| Atlas: the drawing's north | ش | N |
+| Atlas: the sea's name | البحر المتوسط | Mediterranean Sea |
+| Atlas: the index (assistive) | مناطق مساحات العمل في الدليل | Where the directory's coworking spaces are |
 | The Strip's name (assistive) | رسم لقطاع غزة، عليه مساحات العمل في الدليل | A drawing of the Gaza Strip, with the directory's coworking spaces on it |
 | The Strip's description (assistive) | رسم فنّي لا خريطة. النقاط من بيانات الدليل في 14 نوفمبر 2026. | An artistic drawing, not a map. The dots are from the directory's data of 14 November 2026. |
 | The letter rule (replaces «حرف واحد على الأقل»; the checklist, which Slate's one line replaces) | حرف واحد على الأقل، بأي لغة | At least one letter, in any language |

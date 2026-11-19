@@ -3,7 +3,8 @@
 // this file once, compiled by the page's own Babel, and draws its page in its design. The shared
 // modules (masaha/shared.jsx, masaha/auth.jsx) are read, never changed; every name here starts with
 // `Ax` or `ax`, so no page's global is overwritten. The page logic is one; each design is its CSS
-// (`_auth/<design>.css` over `_auth/base.css`) and the few choices in AX_DESIGNS.
+// (`_auth/<design>.css` over `_auth/base.css`) and the few choices in AX_DESIGNS. Sign in also draws round 4's
+// designs (2026-11-19): Slate's form, each with a panel or a frame of its own.
 (function () {
   const DS = window.MasahaDesignSystem;
   const { DirectionProvider, Field, Input, InputAction, Button, EyeIcon, EyeOffIcon, LogInIcon, LogOutIcon, CheckIcon, CircleCheckIcon, CircleAlertIcon, TriangleAlertIcon, InfoIcon, LanguagesIcon, MoonIcon, SunIcon, ArrowStartIcon } = DS;
@@ -16,6 +17,9 @@
     slate: { ownerNote: 'top', wayBackTop: false, polish: true },
     // Slate's second version (Sign in only, 2026-11-19): Slate's form and stylesheet, a new panel (AxPanelV2).
     slate2: { ownerNote: 'top', wayBackTop: false, polish: true, v2: true },
+    // Round 4 (Sign in only, 2026-11-19, decisions/auth.md): Slate's form (`slateForm`: the frame carries
+    // `ax--slate` too), each with a panel or a frame of its own.
+    atlas: { ownerNote: 'top', wayBackTop: false, polish: true, slateForm: true, panel: 'atlas' }, // AxAtlasPanel
   };
 
   // ── Words. The product's own are masaha's catalogue (apps/web/src/shared/copy), as they are;
@@ -31,6 +35,10 @@
     // NEW (Slate 2): the panel says what the product is, not what the form's lede says.
     v2Line: tr('دليل مساحات العمل في قطاع غزة: ساعاتها وأسعارها، وهل هي مفتوحة الآن.', 'The Gaza Strip’s coworking directory: their hours, their prices, and whether they’re open now.'),
     stripDesc: tr('رسم فنّي لا خريطة. النقاط من بيانات الدليل في 14 نوفمبر 2026.','An artistic drawing, not a map. The dots are from the directory’s data of 14 November 2026.'),
+    // NEW (Atlas): the drawing's north and its sea; its places are the directory's own areas (lookups).
+    north: tr('ش', 'N'),
+    sea: tr('البحر المتوسط', 'Mediterranean Sea'),
+    placesLabel: tr('مناطق مساحات العمل في الدليل', 'Where the directory’s coworking spaces are'),
     lang: LANG === 'en' ? 'العربية' : 'English',
     themeTo: (t) => (t === 'light' ? tr('المظهر الداكن', 'Dark theme') : tr('المظهر الفاتح', 'Light theme')),
     // catalogue: auth
@@ -286,6 +294,120 @@
     );
   }
 
+  // ── Atlas «الأطلس» (round 4, Sign in only): the Strip that reads as a place. The whole Strip, north up, never
+  //    mirrored, its sea hatched and named, a north mark at its head; to its east an index of the directory's
+  //    places, each on a parallel (a hairline at its latitude) from its spaces on the land to its name. The names
+  //    are the directory's own lookups (governorate «غزة» for Gaza City's nine, the area for the others), at the
+  //    mean latitude of their spaces: in production both would come from the directory's pins. ──
+  const AX_PLACES = [
+    { id: 'gaza', name: tr('غزة', 'Gaza City'), ids: AX_DOTS.slice(0, 9).map((d) => d.id) },
+    { id: 'nuseirat', name: tr('النصيرات', 'Nuseirat'), ids: ['elevate-hub', 'coma-io'] },
+    { id: 'deir', name: tr('دير البلح', 'Deir al-Balah'), ids: ['al-salam-hub'] },
+    { id: 'mawasi', name: tr('المواصي', 'Al-Mawasi'), ids: ['masar-tech'] },
+  ].map((p) => {
+    const ds = AX_DOTS.filter((d) => p.ids.includes(d.id));
+    return Object.assign({}, p, { y: ds.reduce((a, d) => a + d.xy[1], 0) / ds.length, east: Math.max.apply(null, ds.map((d) => d.xy[0])) });
+  });
+  // The map's box, in the drawing's units (0.001° of latitude): the Strip and a margin for the north mark.
+  const AX_AT_VB = [-14, -14, 316, 400];
+  // Where the coast is at a latitude: the coast's points (0–9), north to south, joined by straight lines.
+  function axCoastX(y) {
+    const c = AX_PTS.slice(0, 10);
+    if (y <= c[0][1]) return c[0][0];
+    for (let i = 0; i < c.length - 1; i++) if (y <= c[i + 1][1]) return c[i][0] + ((y - c[i][1]) / (c[i + 1][1] - c[i][1])) * (c[i + 1][0] - c[i][0]);
+    return c[c.length - 1][0];
+  }
+  function AxAtlasMap({ k }) {
+    const uid = 'ax' + React.useId().replace(/[^a-zA-Z0-9_-]/g, '');
+    const vb = AX_AT_VB;
+    const u = (pxs) => pxs / (k || 1.4);
+    const step = u(7), dot = u(1.2);
+    // The sea: horizontal hatching in a band along the coast, as engraved maps draw water.
+    const hatch = [];
+    for (let y = u(3); y < AX_PTS[9][1] - u(6); y += u(6)) {
+      const cx = axCoastX(y) - u(5);
+      const from = Math.max(vb[0], cx - u(k < 1 ? 28 : 64));
+      if (cx - from > u(6)) hatch.push([from, y, cx]);
+    }
+    const right = vb[0] + vb[2];
+    const s = u(7);
+    return (
+      <svg className="ax-at-svg" viewBox={vb.join(' ')} preserveAspectRatio="xMidYMid meet" role="img" aria-labelledby={uid + 't ' + uid + 'd'} focusable="false">
+        <title id={uid + 't'}>{W.stripName}</title>
+        <desc id={uid + 'd'}>{W.stripDesc}</desc>
+        <defs>
+          <pattern id={uid + 'g'} width={step} height={step} patternUnits="userSpaceOnUse">
+            <circle cx={step / 2} cy={step / 2} r={dot} className="ax-at-gridot" />
+          </pattern>
+        </defs>
+        {hatch.map((h, i) => <line key={i} x1={h[0]} y1={h[1]} x2={h[2]} y2={h[1]} className="ax-at-sea" vectorEffect="non-scaling-stroke" />)}
+        <path d={AX_SHAPE} fill={`url(#${uid}g)`} className="ax-at-land" vectorEffect="non-scaling-stroke" />
+        <path d={axCoastD(0)} className="ax-at-coast" vectorEffect="non-scaling-stroke" />
+        {AX_PLACES.map((p) => <line key={p.id} x1={p.east + u(9)} y1={p.y} x2={right} y2={p.y} className="ax-at-leader" vectorEffect="non-scaling-stroke" />)}
+        <path d={`M${vb[0] + u(14)} ${vb[1] + u(34)} V${vb[1] + u(6)} M${vb[0] + u(9)} ${vb[1] + u(12)} L${vb[0] + u(14)} ${vb[1] + u(5)} L${vb[0] + u(19)} ${vb[1] + u(12)}`} className="ax-at-north" vectorEffect="non-scaling-stroke" />
+        {AX_DOTS.map((d) => <rect key={d.id} x={d.xy[0] - s / 2} y={d.xy[1] - s / 2} width={s} height={s} rx={s * 0.3} className="ax-at-space" style={{ strokeWidth: u(1.5) }} />)}
+      </svg>
+    );
+  }
+  function AxAtlasPanel({ page }) {
+    const ref = React.useRef(null);
+    const [box, setBox] = React.useState(null);
+    const vb = AX_AT_VB;
+    React.useLayoutEffect(() => {
+      const el = ref.current;
+      if (!el) return undefined;
+      // The map takes the height the panel leaves it (from 1280), or its width's share below; the index keeps
+      // at least its own width beside it.
+      const measure = () => {
+        const r = el.getBoundingClientRect();
+        const index = Math.min(150, Math.max(116, r.width * 0.24));
+        const byW = (r.width - index) / vb[2];
+        const tall = matchMedia('(min-width: 1280px)').matches;
+        const k = Math.max(0.6, tall ? Math.min(r.height / vb[3], byW) : Math.min(byW, 1.15));
+        // The index takes what is left, up to 240 px: on a wide panel the atlas stands at the start edge with its words.
+        setBox({ k, w: vb[2] * k, h: vb[3] * k, index: Math.max(index, Math.min(240, r.width - vb[2] * k)) });
+      };
+      measure();
+      const ro = new ResizeObserver(measure);
+      ro.observe(el);
+      return () => ro.disconnect();
+    }, []);
+    const pct = (y) => ((y - vb[1]) / vb[3]) * 100 + '%';
+    // The sea's name sits below the north mark and keeps clear of the hatching: it wraps rather than cross it.
+    const seaY = box ? Math.max(52, 66 / box.k + vb[1]) : 52;
+    const seaW = box ? (axCoastX(seaY) - (5 + (box.k < 1 ? 28 : 64)) / box.k - vb[0]) * box.k - 22 - 10 : 0;
+    return (
+      <aside className="ax-panel ax-at" aria-label={W.brand}>
+        {page !== 'change' && (
+          <div className="ax-at-copy">
+            <p className="ax-at-title">{W.panelTitle}</p>
+            <p className="ax-at-line">{W.v2Line}</p>
+          </div>
+        )}
+        <div className="ax-at-region" ref={ref}>
+          {box && (
+            <div className="ax-at-atlas" style={{ width: box.w + box.index + 'px', height: box.h + 'px' }}>
+              <div className="ax-at-map" style={{ width: box.w + 'px', height: box.h + 'px' }}>
+                <AxAtlasMap k={box.k} />
+                <span className="ax-at-label ax-at-label--north" style={{ top: pct(vb[1] + 40 / box.k) }} aria-hidden="true">{W.north}</span>
+                <span className="ax-at-label ax-at-label--sea" style={{ top: pct(seaY), maxWidth: seaW + 'px' }} aria-hidden="true">{W.sea}</span>
+              </div>
+              <ul className="ax-at-index" aria-label={W.placesLabel}>
+                {AX_PLACES.map((p) => (
+                  <li key={p.id} className="ax-at-place" style={{ top: pct(p.y) }}>
+                    <span className="ax-at-rule" aria-hidden="true"></span>
+                    <span className="ax-at-name" dir={DIR}>{p.name}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+        <p className="ax-at-key"><span className="ax-at-keymark" aria-hidden="true"></span>{W.caption}</p>
+      </aside>
+    );
+  }
+
   // ── The frame: the form's column (start) and the ink panel (end, from 1280 px) ──
   function AxTools({ theme, setTheme, signOutButton }) {
     return (
@@ -306,8 +428,9 @@
     // The panel's art sits where the land isn't: the Strip runs from the north-east to the south-west.
     const align = DIR === 'rtl' ? 'xMinYMid meet' : 'xMaxYMid meet';
     const v2 = AX_DESIGNS[design].v2;
+    const atlas = AX_DESIGNS[design].panel === 'atlas';
     return (
-      <div className={['ax', 'ax--' + design, v2 && 'ax--slate', 'ax-p--' + page].filter(Boolean).join(' ')}>
+      <div className={['ax', 'ax--' + design, (v2 || AX_DESIGNS[design].slateForm) && 'ax--slate', 'ax-p--' + page].filter(Boolean).join(' ')}>
         <SkipLink />
         <div className="ax-grid">
           <div className="ax-col">
@@ -322,7 +445,7 @@
               <div className="ax-form">{children}</div>
             </main>
           </div>
-          {v2 ? <AxPanelV2 page={page} /> :<aside className="ax-panel" aria-label={W.brand}>
+          {atlas ? <AxAtlasPanel page={page} /> : v2 ? <AxPanelV2 page={page} /> :<aside className="ax-panel" aria-label={W.brand}>
             <AxLogo onInk link={linkHome} />
             {!(AX_DESIGNS[design].polish && page === 'change') && (
               <div className="ax-panel-copy">
