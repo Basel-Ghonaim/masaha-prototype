@@ -28,5 +28,11 @@
   .inplace-body { flex: 1; overflow-y: auto; padding: 24px 20px calc(24px + env(safe-area-inset-bottom)); }
   .inplace-title { font-size: 1.625rem; }
 }
+.inplace-back { margin-bottom: -8px; }
+.inplace-rule.is-met { color: var(--success-foreground, var(--foreground)); }
+.inplace-done { background: var(--success-subtle); border-color: var(--success); color: var(--foreground); }
+.inplace-done svg { color: var(--success); }
+.inplace-done > svg:first-child { display: none; }
+.inplace-link { font-weight: 500; text-decoration: underline; text-underline-offset: 4px; color: var(--foreground); }
 @keyframes inplace-up { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .inplace-panel { animation: none !important; } }

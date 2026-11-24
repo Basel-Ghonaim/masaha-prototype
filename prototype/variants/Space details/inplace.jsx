@@ -10,28 +10,98 @@ const authHref = (page, kind) => {
 };
 const REPORT_TOPICS = [tr("الأسعار", "Prices"), tr("ساعات العمل", "Opening hours"), tr("التواصل", "Contact"), tr("الموقع", "Location"), tr("المرافق", "Amenities"), tr("أخرى", "Other")];
 
-// P1 (AUTH_IN_PLACE, ADR 0021 draft): the sign-in opens over this page. A dialog from 768 px; below it a
-// full-screen panel with a top bar and its close button. Opening adds one history entry at the same address,
-// so the browser's Back (or the phone's) closes it and keeps the page. Signing in here keeps the page and
-// completes the action that was pressed. The primary action is in the berry (A18), as a proposal.
-function InPlaceGoogle() {
+// AUTH_IN_PLACE (masaha's ADR 0021): the sign-in opens over this page. P1: a dialog from 768 px; below it a
+// full-screen panel with a top bar and its close button; one history entry at the same address, so Back closes it
+// and keeps the page. P2: its views — sign in, register, the reset link's request, the link sent, and the password
+// changed in another tab (A1) — and their states. Signing in keeps the page and completes the pressed action. The
+// primary action is in the berry (A18), as a proposal. The words are production's catalogue's, except where marked
+// NEW. Demo: ?dialog=signin|signin-report &view=signin|register|forgot|sent|changed
+// &state=wrong|rate|busy|google-off|google-taken|taken|resend
+function InPlaceGoogle({ busy, label }) {
   return (
-    <button type="button" className="gsi-button">
+    <button type="button" className="gsi-button" disabled={busy} aria-busy={busy}>
       <svg viewBox="0 0 48 48" width="20" height="20" aria-hidden="true">
         <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
-        <path fill="#4285F4" d="M46.98 24.55c0-1.570-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
         <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
         <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
       </svg>
-      <span>{tr("المتابعة باستخدام Google", "Continue with Google")}</span>
+      <span>{label || tr("المتابعة باستخدام Google", "Continue with Google")}</span>
     </button>
   );
 }
 
-function InPlaceSignIn({ open, onClose, onDone }) {
+function InPlaceOr() {
+  return (
+    <div className="flex items-center gap-3" role="separator" aria-label={tr("أو", "or")}>
+      <span className="h-px flex-1 bg-border"></span>
+      <span className="text-caption text-muted-foreground" aria-hidden="true">{tr("أو", "or")}</span>
+      <span className="h-px flex-1 bg-border"></span>
+    </div>
+  );
+}
+
+function inPlaceMask(email) {
+  const at = email.indexOf('@');
+  return at < 1 ? email : email[0] + '•••' + email.slice(at);
+}
+
+function inPlaceClock(s) {
+  return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+}
+
+function useInPlaceCountdown(from) {
+  const [left, setLeft] = React.useState(from);
+  React.useEffect(() => {
+    if (left <= 0) return undefined;
+    const t = setTimeout(() => setLeft(left - 1), 1000);
+    return () => clearTimeout(t);
+  }, [left]);
+  return [left, setLeft];
+}
+
+function InPlacePassword({ label, value, onChange, autoComplete, error, rule }) {
   const [show, setShow] = React.useState(false);
-  const [busy, setBusy] = React.useState(false);
-  // Back closes it: one history entry at the same address while it is open.
+  const ok = value.length >= 8 && /\p{L}/u.test(value) && /\d/.test(value);
+  return (
+    <div className="flex flex-col gap-2">
+      <Field label={label} error={error}>
+        <Input type={show ? 'text' : 'password'} dir="ltr" autoComplete={autoComplete} enterKeyHint="done" value={value} onChange={(e) => onChange(e.target.value)}
+          action={<InputAction label={show ? tr("إخفاء كلمة المرور", "Hide password") : tr("إظهار كلمة المرور", "Show password")} icon={show ? <EyeOffIcon /> : <EyeIcon />} onClick={() => setShow(!show)} />} />
+      </Field>
+      {/* A7: the password's conditions as one line — before typing, what it needs; once met, a tick. */}
+      {rule && (
+        <p className={'inplace-rule text-body-sm ' + (ok ? 'is-met' : 'text-muted-foreground')} aria-live="polite">
+          {ok ? tr("✓ كلمة المرور مناسبة", "✓ The password is fine") : tr("8 أحرف على الأقل، فيها حرف ورقم", "At least 8 characters, with a letter and a number")}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function InPlaceBack({ onClick }) {
+  return (
+    <Button type="button" variant="link" size="sm" className="inplace-back self-start px-0" onClick={onClick}>
+      <ChevronStartIcon />{tr("العودة إلى تسجيل الدخول", "Back to sign in")}
+    </Button>
+  );
+}
+
+function InPlaceSignIn({ open, onClose, onDone, space }) {
+  const demoView = pageParams.get('view');
+  const demo = pageParams.get('state');
+  const [view, setView] = React.useState(demoView || 'signin');
+  const [email, setEmail] = React.useState(demo === 'wrong' || demo === 'rate' || demo === 'taken' || ['sent', 'changed', 'forgot'].includes(demoView) ? 'sara@example.com' : '');
+  const [password, setPassword] = React.useState(demo === 'busy' ? 'masaha2026' : '');
+  const [name, setName] = React.useState(demo === 'taken' ? tr("سارة", "Sara") : '');
+  const [busy, setBusy] = React.useState(demo === 'busy');
+  const [failure, setFailure] = React.useState(demo === 'wrong' ? 'wrong' : demo === 'taken' ? 'taken' : null);
+  const [google, setGoogle] = React.useState(demo === 'google-off' ? 'off' : demo === 'google-taken' ? 'taken' : null);
+  const [rateLeft] = useInPlaceCountdown(demo === 'rate' ? 299 : 0);
+  const [resendLeft, setResendLeft] = useInPlaceCountdown(view === 'sent' && demo !== 'resend' ? 58 : 0);
+  const [tried, setTried] = React.useState(false);
+
+  // Back closes it: one history entry at the same address while it is open (P1).
   React.useEffect(() => {
     if (!open) return undefined;
     history.pushState({ inplace: 1 }, '');
@@ -39,48 +109,145 @@ function InPlaceSignIn({ open, onClose, onDone }) {
     addEventListener('popstate', onPop);
     return () => removeEventListener('popstate', onPop);
   }, [open]);
-  const close = () => { if (history.state && history.state.inplace) history.back(); else onClose(); };
-  const submit = (e) => {
-    e.preventDefault(); setBusy(true);
-    setTimeout(() => { setBusy(false); if (history.state && history.state.inplace) history.go(-1); onDone(open); }, 700);
+  const close = () => { if (busy) return; if (history.state && history.state.inplace) history.back(); else onClose(); };
+  const go = (next) => { setFailure(null); setGoogle(null); setTried(false); setView(next); };
+  const finish = (how) => {
+    setBusy(true);
+    setTimeout(() => { setBusy(false); if (history.state && history.state.inplace) history.go(-1); onDone(open, how, name); }, 800);
   };
-  const title = open === 'report' ? tr("سجّل الدخول للإبلاغ عن معلومة", "Sign in to report information") : tr("سجّل الدخول لحفظ المساحات في المفضّلة", "Sign in to save spaces to your favourites");
-  const line = open === 'report' ? tr("لتجد الردّ على بلاغك في «بلاغاتي».", "So you’ll find the reply to your report in “My reports”.") : tr("تجد المساحات التي تحفظها في حسابك على أي جهاز.", "Spaces you save are in your account on any device.");
+
+  const fav = open !== 'report';
+  const sName = space ? spaceName(space) : '';
+  const titles = {
+    signin: fav ? tr("سجّل الدخول لحفظ المساحات في المفضّلة", "Sign in to save spaces to your favourites") : tr("سجّل الدخول للإبلاغ عن معلومة", "Sign in to report information"),
+    // NEW: register keeps the reason in its title.
+    register: fav ? tr("أنشئ حسابًا لحفظ المساحات في المفضّلة", "Create an account to save spaces to your favourites") : tr("أنشئ حسابًا للإبلاغ عن معلومة", "Create an account to report information"),
+    forgot: tr("نسيت كلمة المرور", "Forgot password"),
+    sent: tr("تفقّد بريدك الإلكتروني", "Check your email"),
+    changed: tr("تم تغيير كلمة المرور", "Your password was changed"),
+  };
+  const lines = {
+    signin: fav ? tr("تجد المساحات التي تحفظها في حسابك على أي جهاز.", "Spaces you save are in your account on any device.") : tr("لتجد الردّ على بلاغك في «بلاغاتي».", "So you’ll find the reply to your report in “My reports”."),
+    register: tr("احفظ مساحاتك المفضّلة وتابع البلاغات التي ترسلها.", "Save your favourite spaces and follow the reports you send."),
+    forgot: tr("أدخل البريد الذي سجّلت به، وسنرسل إليه رابطًا لتعيين كلمة مرور جديدة.", "Enter the email you signed up with, and we’ll send it a link to set a new password."),
+    sent: tr("إذا كان هذا البريد مسجّلًا لدينا، ستصلك رسالة فيها رابط لتعيين كلمة مرور جديدة. الرابط صالح لمدة ساعة. تفقّد مجلد الرسائل غير المرغوب فيها.", "If this email is registered with us, you’ll get a message with a link to set a new password. The link is valid for one hour. Check your spam folder."),
+    // NEW (A1): the tab that waited learns the reset happened elsewhere.
+    changed: tr("وسُجّل خروجك من كل الأجهزة. سجّل الدخول بكلمة المرور الجديدة.", "You were signed out on all devices. Sign in with your new password."),
+  };
+
+  const emailField = (autoFocusNext) => (
+    <Field label={tr("البريد الإلكتروني", "Email")} error={tried && !email.includes('@') ? tr("تحقّق من كتابة البريد الإلكتروني، مثل name@example.com", "Check the email, like name@example.com") : failure === 'taken' ? tr("يوجد حساب بهذا البريد الإلكتروني.", "An account with this email already exists.") : undefined}>
+      <Input type="email" inputMode="email" dir="ltr" autoComplete="email" placeholder="name@example.com" enterKeyHint={autoFocusNext ? 'next' : 'send'} value={email} onChange={(e) => setEmail(e.target.value)} />
+    </Field>
+  );
+
+  const googleBlock = (label) => (
+    <>
+      <InPlaceGoogle busy={busy} label={label} />
+      {google === 'off' && (
+        <Alert variant="warning"><AlertTitle>{tr("تعذّرت المتابعة باستخدام Google", "Couldn’t continue with Google")}</AlertTitle>
+          <AlertDescription>{tr("الدخول باستخدام Google غير متاح الآن. استخدم البريد الإلكتروني وكلمة المرور، أو حاول لاحقًا.", "Signing in with Google isn’t available right now. Use your email and password, or try later.")}</AlertDescription></Alert>
+      )}
+      {google === 'taken' && (
+        <Alert variant="destructive"><AlertTitle>{tr("تعذّرت المتابعة باستخدام Google", "Couldn’t continue with Google")}</AlertTitle>
+          <AlertDescription>{tr("يوجد حساب بهذا البريد الإلكتروني. سجّل الدخول بكلمة مروره؛ وإن لم تعرفها فأعد تعيينها من «نسيت كلمة المرور»، أو اطلبها ممّن أنشأ حسابك.", "An account with this email already exists. Sign in with its password; if you don’t know it, reset it from “Forgot password”, or ask whoever created your account.")}</AlertDescription>
+          <AlertAction><Button variant="outline" size="sm" onClick={() => go('forgot')}>{tr("نسيت كلمة المرور؟", "Forgot password?")}</Button></AlertAction></Alert>
+      )}
+      <InPlaceOr />
+    </>
+  );
+
+  let body = null;
+  if (view === 'signin' || view === 'changed') {
+    const submit = (e) => { e.preventDefault(); setTried(true); if (!email.includes('@') || !password) return; finish('signin'); };
+    body = (
+      <form className="inplace-form" onSubmit={submit} noValidate>
+        {view === 'signin' && googleBlock()}
+        {failure === 'wrong' && (
+          <Alert variant="destructive" role="alert"><AlertTitle>{tr("تعذّر تسجيل الدخول", "Couldn’t sign in")}</AlertTitle>
+            <AlertDescription>{tr("البريد الإلكتروني أو كلمة المرور غير صحيحة.", "The email or password is incorrect.")}</AlertDescription></Alert>
+        )}
+        {emailField(true)}
+        <div className="flex flex-col gap-2">
+          <InPlacePassword label={tr("كلمة المرور", "Password")} value={password} onChange={setPassword} autoComplete="current-password" error={tried && !password ? tr("أدخل كلمة المرور", "Enter your password") : undefined} />
+          <Button type="button" variant="link" size="sm" className="self-start px-0" onClick={() => go('forgot')}>{tr("نسيت كلمة المرور؟", "Forgot password?")}</Button>
+        </div>
+        {rateLeft > 0 && <p className="text-body-sm text-destructive" role="status">{tr("محاولات كثيرة، حاول بعد ", "Too many attempts, try again in ")}<Ltr>{inPlaceClock(rateLeft)}</Ltr></p>}
+        <Button type="submit" className="inplace-primary w-full" loading={busy} disabled={rateLeft > 0}>{tr("تسجيل الدخول", "Sign in")}</Button>
+      </form>
+    );
+  } else if (view === 'register') {
+    const submit = (e) => { e.preventDefault(); setTried(true); if (!name.trim() || !email.includes('@') || password.length < 8) return; finish('register'); };
+    body = (
+      <form className="inplace-form" onSubmit={submit} noValidate>
+        {googleBlock()}
+        <Field label={tr("الاسم", "Name")} error={tried && !name.trim() ? tr("أدخل اسمك", "Enter your name") : undefined}>
+          <Input autoComplete="name" enterKeyHint="next" value={name} onChange={(e) => setName(e.target.value)} />
+        </Field>
+        {emailField(true)}
+        {failure === 'taken' && (
+          <Button type="button" variant="outline" size="sm" className="self-start" onClick={() => go('signin')}>{tr("سجّل الدخول بهذا البريد", "Sign in with this email")}</Button>
+        )}
+        <InPlacePassword label={tr("كلمة المرور", "Password")} value={password} onChange={setPassword} autoComplete="new-password" rule />
+        <Button type="submit" className="inplace-primary w-full" loading={busy}>{tr("إنشاء الحساب", "Create account")}</Button>
+        <p className="text-body-sm text-muted-foreground">{tr("اقرأ ", "Read the ")}<a href="Privacy.html" target="_blank" rel="noopener" className="inplace-link">{tr("سياسة الخصوصية", "privacy policy")}</a></p>
+      </form>
+    );
+  } else if (view === 'forgot') {
+    const submit = (e) => { e.preventDefault(); setTried(true); if (!email.includes('@')) return; setBusy(true); setTimeout(() => { setBusy(false); setResendLeft(58); go('sent'); }, 700); };
+    body = (
+      <form className="inplace-form" onSubmit={submit} noValidate>
+        {emailField(false)}
+        <Button type="submit" className="inplace-primary w-full" loading={busy}>{tr("أرسل رابط الاستعادة", "Send reset link")}</Button>
+      </form>
+    );
+  } else if (view === 'sent') {
+    body = (
+      <div className="inplace-form">
+        <p className="text-body-sm text-muted-foreground">{tr("أُرسلت إلى ", "Sent to ")}<Ltr>{inPlaceMask(email || 'sara@example.com')}</Ltr></p>
+        {/* NEW: what happens to the pressed action, so the guest knows nothing is lost. */}
+        <Alert variant="info"><AlertDescription>
+          {fav ? tr(`بعد تعيين كلمة المرور الجديدة نعيدك إلى ${sName}، ونكمل حفظها في مفضّلتك.`, `Once your new password is set, we bring you back to ${sName} and finish saving it to your favourites.`)
+            : tr(`بعد تعيين كلمة المرور الجديدة نعيدك إلى ${sName}، لتكمل بلاغك.`, `Once your new password is set, we bring you back to ${sName} to finish your report.`)}
+        </AlertDescription></Alert>
+        <Button variant="outline" className="w-full" disabled={resendLeft > 0} onClick={() => setResendLeft(58)}>
+          {resendLeft > 0 ? <>{tr("أعد الإرسال بعد ", "Resend in ")}<Ltr>{inPlaceClock(resendLeft)}</Ltr></> : tr("أعد الإرسال", "Resend")}
+        </Button>
+        <Button variant="link" size="sm" className="self-center" onClick={() => { setEmail(''); go('forgot'); }}>{tr("استخدم بريدًا آخر", "Use another email")}</Button>
+      </div>
+    );
+  }
+
+  const changedAlert = view === 'changed' && (
+    <Alert variant="info" role="status" className="inplace-done"><CircleCheckIcon aria-hidden="true" /><AlertTitle>{titles.changed}</AlertTitle><AlertDescription>{lines.changed}</AlertDescription></Alert>
+  );
+  const head = view === 'changed' ? { t: titles.signin, l: lines.signin } : { t: titles[view], l: lines[view] };
+
   return (
     <Dialog open={!!open} onOpenChange={(o) => { if (!o) close(); }}>
       {open && (
-        <DialogContent closeLabel={tr("إغلاق", "Close")} className="inplace-panel" onOpenAutoFocus={(e) => { if (!matchMedia('(min-width: 768px)').matches) { e.preventDefault(); const t = document.querySelector('.inplace-title'); if (t) t.focus(); } }}>
+        <DialogContent closeLabel={tr("إغلاق", "Close")} className="inplace-panel"
+          onEscapeKeyDown={(e) => { if (busy) e.preventDefault(); }}
+          onOpenAutoFocus={(e) => { if (!matchMedia('(min-width: 768px)').matches) { e.preventDefault(); const t = document.querySelector('.inplace-title'); if (t) t.focus(); } }}>
           <div className="inplace-bar">
-            <DialogClose asChild><Button variant="ghost" size="icon" aria-label={tr("إغلاق", "Close")}><XIcon /></Button></DialogClose>
+            <DialogClose asChild><Button variant="ghost" size="icon" aria-label={tr("إغلاق", "Close")} disabled={busy}><XIcon /></Button></DialogClose>
           </div>
           <div className="inplace-body">
+            {(view === 'forgot' || view === 'sent') && <InPlaceBack onClick={() => go('signin')} />}
             <DialogHeader className="inplace-head">
-              <DialogTitle className="inplace-title" tabIndex={-1}>{title}</DialogTitle>
-              <DialogDescription>{line}</DialogDescription>
+              <DialogTitle className="inplace-title" tabIndex={-1}>{head.t}</DialogTitle>
+              <DialogDescription>{head.l}</DialogDescription>
             </DialogHeader>
-            <form className="inplace-form" onSubmit={submit} noValidate>
-              <InPlaceGoogle />
-              <div className="flex items-center gap-3" role="separator" aria-label={tr("أو", "or")}>
-                <span className="h-px flex-1 bg-border"></span>
-                <span className="text-caption text-muted-foreground" aria-hidden="true">{tr("أو", "or")}</span>
-                <span className="h-px flex-1 bg-border"></span>
-              </div>
-              <Field label={tr("البريد الإلكتروني", "Email")}>
-                <Input type="email" inputMode="email" dir="ltr" autoComplete="email" placeholder="name@example.com" enterKeyHint="next" />
-              </Field>
-              <div className="flex flex-col gap-2">
-                <Field label={tr("كلمة المرور", "Password")}>
-                  <Input type={show ? 'text' : 'password'} dir="ltr" autoComplete="current-password" enterKeyHint="done"
-                    action={<InputAction label={show ? tr("إخفاء كلمة المرور", "Hide password") : tr("إظهار كلمة المرور", "Show password")} icon={show ? <EyeOffIcon /> : <EyeIcon />} onClick={() => setShow(!show)} />} />
-                </Field>
-                <Button type="button" variant="link" size="sm" className="self-start px-0">{tr("نسيت كلمة المرور؟", "Forgot password?")}</Button>
-              </div>
-              <Button type="submit" className="inplace-primary w-full" loading={busy}>{tr("تسجيل الدخول", "Sign in")}</Button>
-            </form>
-            <p className="inplace-new text-body-sm text-muted-foreground">
-              {tr("جديد على مساحة؟ ", "New to Masaha? ")}
-              <Button type="button" variant="link" size="sm" className="px-0">{tr("إنشاء حساب", "Create an account")}</Button>
-            </p>
+            {changedAlert}
+            {body}
+            {view === 'signin' && (
+              <p className="inplace-new text-body-sm text-muted-foreground">{tr("جديد على مساحة؟ ", "New to Masaha? ")}
+                <Button type="button" variant="link" size="sm" className="px-0" onClick={() => go('register')}>{tr("إنشاء حساب", "Create an account")}</Button></p>
+            )}
+            {view === 'register' && (
+              <p className="inplace-new text-body-sm text-muted-foreground">{tr("لديك حساب؟ ", "Have an account? ")}
+                <Button type="button" variant="link" size="sm" className="px-0" onClick={() => go('signin')}>{tr("تسجيل الدخول", "Sign in")}</Button></p>
+            )}
           </div>
         </DialogContent>
       )}
@@ -288,10 +455,11 @@ function SpaceDetailsScreen() {
           <StatusContactCard space={space} km={km} />
         </aside>
       </div>
-      <InPlaceSignIn open={signIn} onClose={() => setSignIn(false)} onDone={(why) => {
+      <InPlaceSignIn open={signIn} space={space} onClose={() => setSignIn(false)} onDone={(why, how, who) => {
         setSignIn(false); setSignedIn(true);
-        if (why === 'report') { setReport(true); toast.success(tr("أهلًا بعودتك", "Welcome back")); }
-        else { setFav(true); toast.success(favSavedLine(space)); }
+        const hello = how === 'register' ? tr(`أهلًا ${who || 'سارة'}، تم إنشاء حسابك`, `Welcome ${who || 'Sara'}, your account is ready`) : tr("أهلًا بعودتك", "Welcome back");
+        if (why === 'report') { setReport(true); toast.success(hello); }
+        else { setFav(true); toast.success(hello, { description: favSavedLine(space) }); }
       }} />
       <ReportDialog open={report} onOpenChange={setReport} space={space} />
       <PlatformContactDialog open={platform} onOpenChange={setPlatform} />
