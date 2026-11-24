@@ -26,5 +26,7 @@ window.MASAHA_VARIANTS = (function () {
     'Forgot password': auth,
     'Reset password': auth,
     'Change password': auth,
+    // AUTH_IN_PLACE P1 (2026-11-24): the sign-in over the page (decisions/Space details.md).
+    'Space details': [{ name: 'inplace', ar: 'الدخول في مكانه', en: 'Sign in in place', css: true }],
   };
 })();
