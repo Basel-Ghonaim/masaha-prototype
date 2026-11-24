@@ -1,0 +1,6 @@
+/* Reset password ?v=inplace — AUTH_IN_PLACE P2 loop 2 (decisions/Space details.md). The primary action in the berry
+   (A18, a proposal against ADR 0019), as on the space page's in-place sign-in. */
+.inplace-primary { background: var(--spark-600); color: #fff; }
+.inplace-primary:hover { background: var(--spark-700); }
+[data-theme=dark] .inplace-primary { background: var(--spark-400); color: var(--neutral-950); }
+[data-theme=dark] .inplace-primary:hover { background: var(--spark-300); }

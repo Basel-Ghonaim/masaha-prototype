@@ -26,7 +26,12 @@ Page: `prototype/Space details.html` · screen 3 of [SCREENS.md](../SCREENS.md)
   Demo parameters: `dialog=signin|signin-report`, `view=register|forgot|sent|changed`,
   `state=wrong|rate|busy|google-off|google-taken|taken`. The words are production's catalogue's except the ones
   marked NEW in the file.
-- **Not yet:** the focus back on the heart after closing (WI-C1 builds it); the reset link's page; on «changed» the
+- **P2 (loop 2) — the reset link's page** (`Reset password.html?v=inplace&from=focus`, its own variant): when the
+  reset was asked from the in-place sign-in, the page says where it returns («بعد الحفظ سجّل الدخول هنا، ونعيدك إلى
+  فوكس هاب…», NEW); the password's condition is A7's one line; once saved, it **signs in right there** — the e-mail
+  filled, the focus in the password — and returns to the space with the favourite saved and «أهلًا بعودتك» (never a
+  sign-in by itself, ADR 0021 point 4). The English pass of every view.
+- **Not yet:** the focus back on the heart after closing (WI-C1 builds it); on «changed» the
   focus should go to the password, the e-mail being filled.
 - **Why:** AUTH_IN_PLACE (masaha's ADR 0021, in draft): a guest who presses the heart is most often new; the round
   trip through the pages sent exactly them away.
