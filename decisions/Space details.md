@@ -1,6 +1,6 @@
 # Space details
 
-Page: `prototype/Space details.html` · the space page
+Page: `prototype/Space details.html` · screen 3 of [SCREENS.md](../SCREENS.md)
 
 ## Variants
 
@@ -23,6 +23,7 @@ Page: `prototype/Space details.html` · the space page
 
 ## The owner's choice
 
-- Not yet.
+- 2026-11-24 — **inplace** P1 approved by the owner: the shell (a dialog from 768 px, a full-screen panel with a
+  close button below it, Back closing it) and the berry primary action. P2 (the content and every state) next.
 - Promoted into the original: not yet.
 - Built in masaha: not yet.
