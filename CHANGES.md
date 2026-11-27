@@ -361,3 +361,9 @@ Production takes ink + berry ([ADR 0019](https://github.com/Basel-Ghonaim/masaha
 | **The reset email** | Production's colours, ink + berry's neutrals: the page `#f7fbff`, the card `#ffffff`, the borders `#dde5ed`, the brand line, the button and the links in the ink `#1a1f25`, the text `#1a1f25`, the muted lines `#5e646a`; no spark | `Reset email.html` |
 | **The primary's hover** | Mixed toward the page in OKLab, as production's `primary-hover`: in OKLCH Chrome drops the hue of the ink's near-greys, and the hover painted a warm grey (`#463e40` for `#3c4147`) | `masaha/identity-ink-spark.css` |
 | **The documents** | The `?identity=` row; the `Wordmark.html` line: option A superseded by the logo | `INDEX.md`, `SCREENS.md` |
+
+## Finding 215 — Home open now and Gaza's day (2026-11-27)
+
+| What changed | Where |
+|---|---|
+| Home lists the spaces open by their hours, verified or not, titles the section «مفتوحة الآن» / “Open now”, and opens the Directory with `?open=1`; `TodayHours` selects its day on Gaza's clock. This directly corrects the originals, by the owner's explicit exception to the variant rule | `prototype/Home.html`, `prototype/masaha/shared.jsx` |

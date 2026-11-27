@@ -376,10 +376,9 @@ function LiveStatus({ space }) {
   return <Badge variant="neutral">{tr("مغلق الآن", "Closed now")}</Badge>;
 }
 
-const DAY_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
 function TodayHours({ space }) {
   if (!space.hours) return <span>{tr("ساعات العمل غير متوفرة", "Hours not available")}</span>;
-  const h = space.hours[DAY_KEYS[new Date().getDay()]];
+  const h = space.hours[gazaNow().day];
   return h ? <span>{tr("اليوم ", "Today ")}<Ltr>{h[0]}–{h[1]}</Ltr></span> : <span>{tr("مغلقة اليوم", "Closed today")}</span>;
 }
 
